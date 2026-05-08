@@ -1,1 +1,45 @@
-<p>sidebar works!</p>
+<div class="shell" [class.shell--collapsed]="!sidebarOpen">
+
+  <aside class="sidebar">
+    <div class="sidebar__logo">
+      <div class="logo-icon text-primary">
+        <i class="fa-solid fa-microscope fa-2x"></i>
+      </div>
+      <span class="logo-text">EL-NOUR LAB</span>
+    </div>
+
+    <div class="sidebar__role">
+      <span class="role-badge" [ngClass]="roleBadgeClass">
+        {{ roleLabel }}
+      </span>
+    </div>
+
+    <div class="sidebar__divider"></div>
+
+    <nav class="sidebar__nav">
+      <a *ngFor="let item of navItems" [routerLink]="item.route" routerLinkActive="nav-item--active" class="nav-item"
+        [attr.title]="item.label">
+
+        <span class="nav-item__icon">
+          <i [class]="item.icon"></i>
+        </span>
+
+        <span class="nav-item__label">{{ item.label }}</span>
+        <span class="nav-item__pill"></span>
+      </a>
+    </nav>
+
+    <div class="sidebar__spacer"></div>
+
+    <button class="sidebar__logout" (click)="logout()">
+      <i class="fa-solid fa-right-from-bracket me-2"></i>
+      <span class="sidebar__logout-label">Log Out</span>
+    </button>
+  </aside>
+
+  <!-- <div class="main">
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </div> -->
+</div>
