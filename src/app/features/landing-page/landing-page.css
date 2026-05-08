@@ -1,0 +1,267 @@
+/* --- Global Variables & Overrides --- */
+.text-primary { color: #0d6efd !important; }
+.bg-light-blue { background-color: #e6f0ff; }
+.bg-soft-blue { background-color: #f4f8fc; }
+
+/* --- 1. Hero Section --- */
+.hero-title {
+  font-size: 3.5rem;
+  line-height: 1.2;
+  letter-spacing: -1px;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.btn-custom {
+  padding: 12px 24px;
+  border-radius: 8px;
+}
+
+.hero-img-wrapper img {
+  height: 500px;
+}
+
+/* --- 2. About Us Section --- */
+.section-title {
+  font-size: 2rem;
+}
+
+.about-text {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #495057 !important;
+}
+
+/* CSS Grid for the Image Collage to match the picture perfectly */
+.about-collage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 200px 200px;
+  gap: 1.5rem;
+}
+
+.collage-img-1 { grid-column: 1; grid-row: 1; height: 100%; }
+.collage-card-1 { grid-column: 2; grid-row: 1; height: 100%; }
+.collage-card-2 { grid-column: 1; grid-row: 2; height: 100%; }
+.collage-img-2 { grid-column: 2; grid-row: 2; height: 100%; }
+
+/* --- 3. Our Work Process Section --- */
+.step-circle {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  position: relative;
+  padding: 6px;
+  background: white;
+  border: 1px solid #cce0ff;
+  box-shadow: 0 10px 20px rgba(13, 110, 253, 0.05);
+}
+
+.step-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.step-badge {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 40px;
+  height: 40px;
+  background-color: #0d6efd;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.9rem;
+  border: 3px solid white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 991px) {
+  .hero-title { font-size: 2.5rem; }
+  .about-collage {
+    grid-template-rows: 180px 180px;
+  }
+}
+
+@media (max-width: 575px) {
+  .about-collage {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .collage-card-1, .collage-card-2 { padding: 2rem !important; }
+}
+
+/* --- 4. Booking CTA Section --- */
+/* --- 4. Booking CTA Section --- */
+.cta-banner {
+  background-color: #0d6efd !important; 
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.text-white-75 {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Button Styling */
+.cta-btn {
+  transition: all 0.3s ease;
+}
+
+.cta-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+  background-color: #ffffff;
+}
+
+/* Elegant Icon Wrapper Styling */
+.cta-icon-wrapper {
+  width: 160px;
+  height: 160px;
+  background-color: rgba(255, 255, 255, 0.1); 
+  border: 2px solid rgba(255, 255, 255, 0.2); 
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px);
+}
+
+.service-card {
+  position: relative;
+  height: 220px;
+  /* width:435px; */
+  border-radius: 20px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  cursor: pointer;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 80, 160, 0.64),
+    rgba(0, 40, 90, 0.9)
+  );
+  transition: 0.3s;
+}
+
+
+.content {
+  position: relative;
+    color: white;
+  z-index: 2;
+}
+
+
+.content h5 {
+  position: absolute;
+  left: 30px;
+
+  font-weight: 500;
+  margin-bottom: 0;
+  transition: 0.3s;
+}
+
+
+.desc {
+  opacity: 0;
+  transform: translateY(50px);
+  font-size: 14px;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.service-card:hover .desc {
+  opacity: 1;
+  transform: translateY(30px);
+}
+
+.service-card:hover .overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 80, 160, 0.6),
+    rgba(0, 40, 90, 1)
+  );
+}
+
+.cards-wrapper {
+  position: relative;
+  height: 300px;
+}
+
+.card-item {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) scale(0.8);
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+
+.card-item.active {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+  z-index: 3;
+}
+
+.card-item.prev {
+  transform: translateX(-150%) scale(0.85);
+  opacity: 0.5;
+  z-index: 2;
+}
+
+.card-item.next {
+  transform: translateX(50%) scale(0.85);
+  opacity: 0.5;
+  z-index: 2;
+}
+
+.card {
+  width: 350px;
+  padding: 25px;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.stars {
+  color: gold;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-150%);
+  font-size: 30px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 9999;
+  font-size: 50px;
+}
+
+.left { left: 0; }
+.right { right: 0; }
+
+@media (max-width: 768px) {
+  .arrow.left {
+    left: -13px;
+  }
+
+  .arrow.right {
+    right: -13px;
+  }
+}
