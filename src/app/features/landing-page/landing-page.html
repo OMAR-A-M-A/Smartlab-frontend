@@ -1,1 +1,180 @@
-<p>landing-page works!</p>
+<section class="hero-section py-5 bg-soft-blue" id="home">
+  <div class="container mt-4">
+    <div class="row align-items-center">
+      <div class="col-lg-7 mb-5 mb-lg-0 pe-lg-5">
+        <h1 class="hero-title fw-bold text-dark mb-4">
+          {{ heroData.titleStart }} <br>
+          <span class="text-primary">{{ heroData.highlightedWord }}</span> {{ heroData.titleEnd }}
+        </h1>
+        <p class="hero-subtitle text-muted mb-5 pe-lg-5">
+          {{ heroData.description }}
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <button class="btn btn-primary btn-custom fw-medium">
+            {{ heroData.primaryButton }} <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
+          </button>
+          <button class="btn btn-outline-primary btn-custom fw-medium">
+            {{ heroData.secondaryButton }} <i class="fa-regular fa-calendar ms-2"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="hero-img-wrapper">
+          <img [src]="heroData.imageSrc" alt="Scientist looking through microscope"
+            class="img-fluid rounded-4 shadow-sm w-100 object-fit-cover">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about-section py-5 my-5" id="about">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title fw-bold text-primary">{{ aboutData.sectionTitle }}</h2>
+    </div>
+
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-5 mb-lg-0 pe-lg-5">
+        <div class="about-collage">
+          <img [src]="aboutData.imgTubes" alt="Test Tubes"
+            class="collage-img-1 rounded-4 shadow-sm w-100 object-fit-cover">
+
+          <div class="collage-card-1 bg-light-blue rounded-4 p-4 d-flex flex-column justify-content-center shadow-sm">
+            <i class="fa-solid fa-microscope text-primary fs-3 mb-2"></i>
+            <h5 class="fw-bold text-dark mb-1">{{ aboutData.techTitle }}</h5>
+            <p class="text-muted small mb-0">{{ aboutData.techDesc }}</p>
+          </div>
+
+          <div
+            class="collage-card-2 bg-primary rounded-4 p-4 text-white d-flex flex-column justify-content-center shadow-sm">
+            <h2 class="fw-bold mb-1 fs-1">{{ aboutData.yearsNum }}</h2>
+            <p class="mb-0 fw-medium">{{ aboutData.yearsText }}</p>
+          </div>
+
+          <img [src]="aboutData.imgMicroscope" alt="Microscope"
+            class="collage-img-2 rounded-4 shadow-sm w-100 object-fit-cover">
+        </div>
+      </div>
+
+      <div class="col-lg-6 ps-lg-4">
+        <p class="about-text text-dark mb-4" [innerHTML]="aboutData.paragraph1"></p>
+        <p class="about-text text-dark mb-0">{{ aboutData.paragraph2 }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="process-section py-5 bg-soft-blue" id="work">
+  <div class="container py-4">
+    <div class="text-center mb-5">
+      <h2 class="section-title fw-bold text-primary mb-3">{{ processData.sectionTitle }}</h2>
+      <h5 class="text-dark fw-medium">{{ processData.subtitle }}</h5>
+    </div>
+
+    <div class="row g-4 mt-2">
+      @for (step of processData.steps; track step.id) {
+      <div class="col-12 col-sm-6 col-lg-3 text-center px-3">
+        <div class="step-circle mx-auto mb-4">
+          <img [src]="step.image" [alt]="step.title" class="step-img">
+          <span class="step-badge">{{ step.id }}</span>
+        </div>
+        <h5 class="fw-bold text-dark mb-3">{{ step.title }}</h5>
+        <p class="text-muted small px-lg-2">{{ step.description }}</p>
+      </div>
+      }
+    </div>
+  </div>
+</section>
+
+<section id="booking" class="booking-section py-5 my-4">
+  <div class="container">
+
+    <div class="cta-banner bg-primary rounded-4 p-4 p-md-5 text-white shadow-sm position-relative overflow-hidden">
+
+      <div class="row align-items-center">
+
+        <div class="col-lg-8 text-center text-lg-start z-2">
+          <h2 class="fw-bold mb-3 fs-2">{{ bookingData.sectionTitle }}</h2>
+          <p class="mb-4 text-white-75 mx-auto mx-lg-0" style="font-size: 1.1rem; line-height: 1.6; max-width: 650px;">
+            {{ bookingData.description }}
+          </p>
+
+          <button class="btn btn-light btn-lg text-primary fw-bold rounded-pill px-5 py-3 shadow-sm cta-btn"
+            routerLink="/booking">
+            {{ bookingData.buttonText }} <i class="fa-solid fa-arrow-right ms-2"></i>
+          </button>
+        </div>
+
+        <div class="col-lg-4 d-none d-lg-flex justify-content-end align-items-center z-2 mt-4 mt-lg-0">
+          <div class="cta-icon-wrapper rounded-circle d-flex align-items-center justify-content-center">
+            <i class="fa-regular fa-calendar-check text-white" style="font-size: 4.5rem;"></i>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<section class="services-section text-center py-5" id="services">
+  <div class="container">
+    <h4 class="text-primary fw-bold mb-2">Our Services</h4>
+    <p class="text-muted mb-5">
+      A comprehensive ecosystem of laboratory precision tailored for your health.
+    </p>
+
+    <div class="row g-4 justify-content-center ms-md-5 ms-0 ">
+      <div class="col-md-5" *ngFor="let service of services">
+        <div class="service-card" [style.backgroundImage]="'url(' + service.image + ')'">
+
+          <div class="overlay"></div>
+
+          <div class="content">
+            <h5>{{service.title}}</h5>
+            <p class="desc">{{service.desc}}</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="testimonials text-center py-5" style="background-color: #D9EBFF;" id="testimonails">
+  <div class="container">
+
+    <h5 class="text-primary fw-bold">Our Testimonials</h5>
+    <p class="text-muted mb-5">
+      A comprehensive ecosystem of laboratory precision tailored for your health.
+    </p>
+
+    <div class="position-relative">
+
+      <button class="arrow left" (click)="prev()">‹</button>
+      <button class="arrow right" (click)="next()">›</button>
+
+      <div class="cards-wrapper">
+
+        <div class="card-item" *ngFor="let item of testimonials; let i = index" [ngClass]="{
+            'active': i === currentIndex,
+            'prev': i === getPrevIndex(),
+            'next': i === getNextIndex()
+          }">
+          <div class="card">
+            <div class="stars">★ ★ ★ ★ ☆</div>
+            <p>{{ item.text }}</p>
+            <h6>{{ item.name }}</h6>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+

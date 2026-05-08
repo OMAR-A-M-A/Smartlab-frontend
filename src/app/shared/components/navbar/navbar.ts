@@ -22,9 +22,7 @@ export class Navbar {
 
   get profileImage(): string {
     const gender = this.authService.getUserGender();
-    return gender === 'female'
-      ? '/images/female-avatar.png'
-      : '/images/male-avatar.png';
+    return gender === 'female' ? '/images/female-avatar.png' : '/images/male-avatar.png';
   }
 
   navigateToDashboard() {
@@ -39,5 +37,19 @@ export class Navbar {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  scrollToSection(sectionId: string) {
+    if (this.router.url !== '/') {
+      this.router.navigate(['/']).then(() => {
+        setTimeout(() => {
+          document
+            .getElementById(sectionId)
+            ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      });
+    } else {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 }

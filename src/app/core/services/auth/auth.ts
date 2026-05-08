@@ -10,10 +10,29 @@ export class Auth {
 
   constructor(private http: HttpClient) {}
 
+  //function to fetch in auth
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/account/login`, credentials);
   }
 
+  register(userData: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/account/registerPatient`, userData);
+  }
+
+  forgotPassword(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/account/forgotPassword`, data);
+  }
+
+  resetPassword(token: string, data: any): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/account/resetPassword/${token}`, data);
+  }
+
+  updatePassword(data: any): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/account/updatePassword`, data);
+  }
+
+
+  //functions to use in auth
   saveToken(token: string): void {
     localStorage.setItem('token', token);
   }
