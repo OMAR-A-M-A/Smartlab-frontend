@@ -1,12 +1,12 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router,RouterModule } from '@angular/router';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Auth } from '../../../core/services/auth/auth';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule ,RouterModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -16,30 +16,33 @@ export class Login {
   private snackBar = inject(MatSnackBar);
 
   loginForm = new FormGroup({
-    identifier: new FormControl('', [Validators.required, Validators.email]),
+    identifier: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),
   });
 
   login() {
     if (this.loginForm.invalid) {
-      this.snackBar.open('Please enter your email and password', 'Close', { duration: 3000 });
+      this.snackBar.open('Please enter your UserName and password', 'Close', { duration: 3000 });
       return;
     }
 
     this.authService.login(this.loginForm.value).subscribe({
       next: (response: any) => {
         this.authService.saveToken(response.token);
-        this.authService.saveRole(response.role);
-
-        if (response.role === 'admin') {
-          this.router.navigate(['/admin/dashboard']);
-        } else if (response.role === 'staff') {
-          this.router.navigate(['/staff/dashboard']);
-        } else if (response.role === 'patient') {
+        this.authService.saveRole(response.data.role);
+        this.snackBar.open(`logged In Successfully, Welcome ${response.data.role}`, 'Close', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'bottom',
+          panelClass: ['success-snackbar'],
+        });
+        if (response.data.role === 'admin' || response.data.role === 'staff') {
+          this.router.navigate(['/']);
+        } else if (response.data.role === 'patient') {
           if (response.isFirstLogin) {
             this.router.navigate(['/change-password']);
           } else {
-            this.router.navigate(['/patient/dashboard']);
+            this.router.navigate(['/']);
           }
         }
       },
