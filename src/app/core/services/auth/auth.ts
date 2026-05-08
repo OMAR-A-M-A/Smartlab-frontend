@@ -38,4 +38,16 @@ export class Auth {
   getRole(): string | null {
     return localStorage.getItem('role');
   }
+
+  saveUserName(name: string): void {
+    localStorage.setItem('userName', name);
+  }
+
+  getUserName(): string | null {
+    return localStorage.getItem('userName');
+  }
+
+  getUserGender(): string | null {
+    return localStorage.getItem('userGender');
+  }
 }
