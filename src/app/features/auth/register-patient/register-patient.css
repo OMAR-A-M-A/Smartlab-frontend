@@ -1,0 +1,14 @@
+.custom-input {
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-size: 1rem;
+}
+
+.custom-input:focus {
+  background-color: #f8f9fa !important;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+.card {
+  border-radius: 20px !important;
+}
