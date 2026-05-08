@@ -1,1 +1,46 @@
-<p>navbar works!</p>
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center text-primary fw-bold fs-4" routerLink="/">
+      <img src="/images/logo.png" alt="EL-NOUR LAB Logo" width="40" height="40" class="d-inline-block align-top me-2">
+      EL-NOUR LAB
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+      <ul class="navbar-nav mx-auto gap-2 fw-medium">
+        <li class="nav-item"><a class="nav-link text-dark px-3" routerLink="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link text-dark px-3" routerLink="/about">About Us</a></li>
+        <li class="nav-item"><a class="nav-link text-dark px-3" routerLink="/services">Services</a></li>
+        <li class="nav-item"><a class="nav-link text-dark px-3" routerLink="/booking">Booking</a></li>
+        <li class="nav-item"><a class="nav-link text-dark px-3" routerLink="/contact">Contact Us</a></li>
+      </ul>
+
+      <div class="d-flex align-items-center gap-3">
+        @if (!authService.isLoggedIn()) {
+        <a class="btn btn-outline-primary fw-semibold px-4 rounded-2" routerLink="/register">Register</a>
+        <a class="btn btn-primary fw-semibold px-4 rounded-2 shadow-sm" routerLink="/login">Login</a>
+        } @else {
+        <div class="d-flex align-items-center gap-3 border-start ps-3" style="cursor: pointer"
+          (click)="navigateToDashboard()">
+
+          <span class="fw-bold text-primary">
+            {{ userRole === 'patient' ? 'My Results' : 'Dashboard' }}
+          </span>
+
+          <div class="d-flex align-items-center gap-2">
+            <span class="text-dark small fw-medium">{{ userName }}</span>
+            <img [src]="profileImage" [alt]="userName" class="rounded-circle border" width="40" height="40">
+          </div>
+
+          <button class="btn btn-sm btn-outline-danger rounded-pill ms-2" (click)="logout(); $event.stopPropagation()">
+            Logout
+          </button>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</nav>

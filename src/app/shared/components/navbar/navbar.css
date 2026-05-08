@@ -1,0 +1,21 @@
+/* Custom hover effect for navigation links */
+.nav-link {
+  transition: color 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+  color: var(--bs-primary) !important;
+}
+
+/* Ensure buttons have matching width for consistency */
+.btn {
+  min-width: 110px;
+}
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-brand img {
+  object-fit: contain;
+}
