@@ -36,6 +36,11 @@ export const routes: Routes = [
       import('./features/auth/change-password/change-password').then((c) => c.ChangePassword),
     canActivate: [authGuard],
   },
+  {
+    path: 'appointments',
+    loadComponent: () =>
+      import('./features/patient/appointments/appointments').then((c) => c.Appointments),
+  },
 
   // ==========================================
   // (Patient Routes)
@@ -55,11 +60,6 @@ export const routes: Routes = [
       {
         path: 'profile',
         loadComponent: () => import('./features/patient/profile/profile').then((c) => c.Profile),
-      },
-      {
-        path: 'appointments',
-        loadComponent: () =>
-          import('./features/patient/appointments/appointments').then((c) => c.Appointments),
       },
       {
         path: 'reports',

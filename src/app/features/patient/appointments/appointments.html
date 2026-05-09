@@ -1,1 +1,124 @@
-<p>appointments works!</p>
+<div class="booking-page bg-light pt-5" style="min-height: calc(90vh - 80px);">
+  <div class="container d-flex justify-content-center">
+    <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 booking-card bg-white"
+      style="max-width: 900px; width: 100%;">
+
+      <div class="mb-4">
+        <h2 class="text-primary fw-bold mb-2">Enter Your Booking Data</h2>
+        <p class="text-muted mb-0">Complete the form below to choose your preferred test and time slot.</p>
+        <p class="text-muted">Our team will be ready for you upon arrival.</p>
+      </div>
+
+      <div class="mb-4 pb-2">
+        <label class="form-label fw-semibold text-dark mb-2">Visit Type</label>
+        <div class="d-flex gap-4 mb-3">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="visitType" id="labVisit" [(ngModel)]="appointmentType"
+              value="Lab-Visit">
+            <label class="form-check-label fw-medium" for="labVisit">Lab Visit</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="visitType" id="homeVisit" [(ngModel)]="appointmentType"
+              value="Home-Visit">
+            <label class="form-check-label fw-medium" for="homeVisit">Home Visit</label>
+          </div>
+        </div>
+
+        @if (appointmentType === 'Home-Visit') {
+        <div class="address-input animate-fade-in mt-2">
+          <label class="form-label fw-semibold text-dark small mb-1">Your Detailed Address</label>
+          <input type="text" class="form-control form-control-lg bg-light border-0 custom-input rounded-3"
+            [(ngModel)]="patientAddress" placeholder="e.g., Nasr City, Abbas El-Akkad St, Building 12">
+        </div>
+        }
+      </div>
+
+      <div class="row g-4">
+
+        <div class="col-md-6">
+          <div class="calendar-wrapper border rounded-4 overflow-hidden bg-white">
+
+            <div class="calendar-header d-flex align-items-center justify-content-between p-3 border-bottom bg-white">
+              <i class="fa-solid fa-chevron-left text-muted" style="cursor: pointer;"></i>
+              <span class="fw-bold bg-primary-light text-primary px-3 py-1 rounded-pill small">
+                {{ currentMonthLabel }}
+              </span>
+              <i class="fa-solid fa-chevron-right" style="cursor: pointer;"></i>
+            </div>
+
+            <div class="days-grid-container p-3 bg-soft-blue">
+              @for (day of next14Days; track day.fullDate) {
+              <div class="day-box text-center p-2 rounded-3" [class.active]="selectedDate === day.fullDate"
+                [class.disabled]="day.isDisabled" (click)="!day.isDisabled && selectDate(day.fullDate)">
+                <span class="d-block text-muted small mb-1 fw-medium">{{ day.dayName }}</span>
+                <span class="d-block fs-5 fw-bold day-number">{{ day.dayNum }}</span>
+              </div>
+              }
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-md-6 ps-md-4">
+
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="fw-bold text-dark">available slots</span>
+
+            <div class="d-flex gap-3 align-items-center">
+              <span class="text-muted small">
+                @if (availableSlots.length > 0) {
+                Page {{ currentSlotPage + 1 }} of {{ Math.ceil(availableSlots.length / slotsPerPage) }}
+                }
+              </span>
+              <div class="d-flex gap-2">
+                <button class="btn btn-sm page-arrow-btn" [disabled]="!hasPrevSlotPage" (click)="prevSlotPage()"
+                  title="Previous Slots">
+                  <i class="fa-solid fa-angle-left"></i>
+                </button>
+                <button class="btn btn-sm page-arrow-btn" [disabled]="!hasNextSlotPage" (click)="nextSlotPage()"
+                  title="Next Slots">
+                  <i class="fa-solid fa-angle-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="slots-grid" style="min-height: 200px;">
+            @if (isLoadingSlots) {
+            <div class="text-center py-5 text-muted w-100 d-flex flex-column align-items-center justify-content-center">
+              <i class="fa-solid fa-spinner fa-spin fa-2x mb-2 text-primary"></i>
+              <span class="small">Loading slots...</span>
+            </div>
+            } @else if (availableSlots.length === 0) {
+            <div class="text-center py-5 text-muted small w-100 bg-light rounded-3">
+              No slots available for this day.
+            </div>
+            } @else {
+            <div class="row g-2 animate-fade-in">
+              @for (slot of paginatedSlots; track slot) {
+              <div class="col-6">
+                <button class="btn w-100 py-2 rounded-3 fw-medium slot-btn" [class.btn-primary]="selectedTime === slot"
+                  [class.btn-light]="selectedTime !== slot" [class.text-dark]="selectedTime !== slot"
+                  (click)="selectTime(slot)">
+                  {{ slot }}
+                </button>
+              </div>
+              }
+            </div>
+            }
+          </div>
+
+          <div class="mt-4 pt-2 text-end">
+            <button class="btn btn-primary btn-lg fw-bold px-4 rounded-3 shadow-sm confirm-btn w-100"
+              [disabled]="!selectedTime" (click)="confirmBooking()">
+              Confirm Booking
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

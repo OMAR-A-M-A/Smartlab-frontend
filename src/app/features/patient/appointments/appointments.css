@@ -1,0 +1,96 @@
+/* --- Core Tokens & Theme --- */
+.bg-primary-light {
+  background-color: #e6f0ff;
+}
+.bg-soft-blue {
+  background-color: #eef4fc;
+}
+.custom-input {
+  padding: 12px 18px;
+  font-size: 0.95rem;
+}
+
+/* --- Calendar Component --- */
+.calendar-wrapper {
+  border-color: #e2e8f0 !important;
+}
+
+
+.days-grid-container {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); 
+  gap: 8px; 
+  border-radius: 0 0 16px 16px;
+}
+
+/* Day Box Styling */
+.day-box {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: transparent;
+  padding: 10px 4px !important; 
+}
+
+.day-box .day-number {
+  color: #334155;
+}
+
+/* Active Day */
+.day-box.active {
+  background-color: #0d6efd !important;
+  box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
+}
+.day-box.active .text-muted,
+.day-box.active .day-number {
+  color: #ffffff !important;
+}
+
+/* Disabled/Off Day */
+.day-box.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background-color: #e2e8f0;
+}
+/* --- Slots Grid --- */
+.slot-btn {
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.slot-btn.btn-light {
+  background-color: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+.slot-btn:hover:not(.btn-primary) {
+  background-color: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+/* --- Confirm Button Hover --- */
+.confirm-btn {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.confirm-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(13, 110, 253, 0.2) !important;
+}
+
+/* --- Simple Animations --- */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
