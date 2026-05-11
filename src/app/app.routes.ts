@@ -66,6 +66,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/patient/my-reports/my-reports').then((c) => c.MyReports),
       },
+      {
+        path: 'my-appointments',
+        loadComponent: () =>
+          import('./features/patient/my-appointments/my-appointments').then(
+            (c) => c.MyAppointments,
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
@@ -86,16 +93,21 @@ export const routes: Routes = [
       {
         path: 'schedule',
         loadComponent: () =>
-          import('./features/staff/daily-schedule/daily-schedule').then((c) => c.DailySchedule),
+          import('./features/shared-dashboard/daily-schedule/daily-schedule').then(
+            (c) => c.DailySchedule,
+          ),
       },
       {
         path: 'manage-patients',
         loadComponent: () =>
-          import('./features/staff/manage-patients/manage-patients').then((c) => c.ManagePatients),
+          import('./features/shared-dashboard/manage-patients/manage-patients').then(
+            (c) => c.ManagePatients,
+          ),
       },
       {
         path: 'reports',
-        loadComponent: () => import('./features/staff/reports/reports').then((c) => c.Reports),
+        loadComponent: () =>
+          import('./features/shared-dashboard/reports/reports').then((c) => c.Reports),
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
@@ -135,6 +147,25 @@ export const routes: Routes = [
           import('./features/admin/dangerous-reports/dangerous-reports').then(
             (c) => c.DangerousReports,
           ),
+      },
+      {
+        path: 'schedule',
+        loadComponent: () =>
+          import('./features/shared-dashboard/daily-schedule/daily-schedule').then(
+            (c) => c.DailySchedule,
+          ),
+      },
+      {
+        path: 'manage-patients',
+        loadComponent: () =>
+          import('./features/shared-dashboard/manage-patients/manage-patients').then(
+            (c) => c.ManagePatients,
+          ),
+      },
+      {
+        path: 'reports',
+        loadComponent: () =>
+          import('./features/shared-dashboard/reports/reports').then((c) => c.Reports),
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
