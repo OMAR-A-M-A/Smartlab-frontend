@@ -31,7 +31,10 @@ export class Auth {
     return this.http.patch(`${this.baseUrl}/account/updatePassword`, data);
   }
 
-
+  updateProfile(profileData: { email?: string; phone?: string }): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/account/updateProfile`, profileData);
+  }
+  
   //functions to use in auth
   saveToken(token: string): void {
     localStorage.setItem('token', token);
