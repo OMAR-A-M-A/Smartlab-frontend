@@ -1,15 +1,38 @@
 export interface ReportTest {
-  testId: string;
+  _id?: string;
+  test: string;
+  testName: string;
+  category: string;
   result: number;
-  status?: 'H' | 'N' | 'L'; // Backend calculates this
-  critical?: boolean; // Backend calculates this
+  unit: string;
+  referenceText: string;
+  referenceRange: {
+    low: number;
+    high: number;
+  };
+  status: 'H' | 'N' | 'L';
+  critical: boolean;
+  patientAdvice: string;
+  trend?: {
+    direction: 'up' | 'down' | 'none';
+  };
 }
 
 export interface Report {
   _id?: string;
-  patient: string; // Patient ID
+  createdBy?: string;
+  patient: string;
   referredBy: string;
   tests: ReportTest[];
-  reportStatus?: string; // Backend calculates this
-  patientAdvice?: string; // Backend calculates this
+  reportStatus?: string;
+  patientAdvice?: string;
+  requestDate?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface ReportResponse {
+  message: string;
+  results: number;
+  data: Report[];
 }
