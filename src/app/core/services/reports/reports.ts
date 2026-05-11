@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
+import { ReportResponse , Report} from '../../../shared/interfaces/report.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Reports {
+  getPatientProfile() {
+    throw new Error('Method not implemented.');
+  }
   private baseUrl = 'https://smartlab-back-production.up.railway.app';
 
   constructor(private http: HttpClient) {}
@@ -38,9 +42,27 @@ export class Reports {
   Endpoint: GET /reports/patient
   Access: Patient Only
   */
-  getPatientReports(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/reports/patient`);
-  }
+  getPatientReports(): Observable<Report[]> {
+
+  return this.http
+    .get<ReportResponse>(`${this.baseUrl}/reports/patient`)
+    .pipe(
+
+      tap((response) => {
+        console.log('FULL API RESPONSE:', response);
+      }),
+
+      map((response) => {
+
+        if (!response || !response.data) {
+          return [];
+        }
+
+        return response.data;
+      })
+
+    );
+}
 
   /*
   Endpoint: PATCH /reports/:id
