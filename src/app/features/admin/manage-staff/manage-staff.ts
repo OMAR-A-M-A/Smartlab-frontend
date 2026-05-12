@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 
 import { ManageStaffServices } from '../../../core/services/staff/staff-services';
 import { StaffModal } from '../../../shared/components/staff-modal/staff-modal';
+import { MatIconModule, MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-manage-staff',
@@ -25,8 +26,9 @@ import { StaffModal } from '../../../shared/components/staff-modal/staff-modal';
     MatSortModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatInputModule
-  ],
+    MatInputModule,
+    MatIcon
+],
   templateUrl: './manage-staff.html'
 })
 export class ManageStaff implements OnInit {
@@ -89,6 +91,22 @@ openAddModal() {
     }).subscribe(() => {
       this.loadStaff();
     });
+  });
+  }
+  openEditModal(staff: any) {
+  const dialogRef = this.dialog.open(StaffModal, {
+    width: '600px',
+    data: { staff } // نرسل بيانات الموظف للمودال
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (!result) return;
+
+    // نقوم بتحديث البيانات الوظيفية
+    this.staffService.updateStaff(staff._id, result.job).subscribe(() => {
+      this.loadStaff();
+    });
+    // ملاحظة: إذا كنت تريد تعديل بيانات الأكاونت (الاسم/الايميل) ستحتاج endpoint منفصل له
   });
 }
 

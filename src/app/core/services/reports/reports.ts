@@ -7,7 +7,7 @@ import { ReportResponse , Report} from '../../../shared/interfaces/report.interf
   providedIn: 'root',
 })
 export class Reports {
-  private baseUrl = 'https://smartlab-production-c511.up.railway.app';
+  private baseUrl = 'https://smartlab-production-55e4.up.railway.app/';
 
   constructor(private http: HttpClient) {}
 

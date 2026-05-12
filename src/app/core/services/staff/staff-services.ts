@@ -6,16 +6,12 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ManageStaffServices {
-  private baseUrl = 'https://smartlab-production-c511.up.railway.app';
+  private baseUrl = 'https://smartlab-production-55e4.up.railway.app';
 
   constructor(private http: HttpClient) { }
 
 // في ملف manage-staff-services.ts
-deleteAccount(id: string): Observable<any> {
-  return this.http.delete(`${this.baseUrl}/account/deleteStaff/${id}`);
 
-  // تأكد من صحة الـ endpoint الخاص بمسح الحساب في الـ backend
-}
   /*
   Endpoint: POST /account/registerStaff
   Access: Admin Only
@@ -53,6 +49,10 @@ deleteAccount(id: string): Observable<any> {
   Access: Admin Only
   */
   deleteStaff(id: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/staff/${id}`);
+    return this.http.delete(`${this.baseUrl}/account/deleteStaff/${id}`);
   }
+
+
+  // تأكد من صحة الـ endpoint الخاص بمسح الحساب في الـ backend
 }
+
