@@ -59,6 +59,8 @@ export class Profile implements OnInit {
         };
         this.isLoading = false;
         this.cdr.detectChanges();
+        console.log(patientData);
+
       },
       error: (err) => {
         console.error(err);
