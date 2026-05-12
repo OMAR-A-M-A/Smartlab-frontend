@@ -8,8 +8,14 @@ import { Observable } from 'rxjs';
 export class ManageStaffServices {
   private baseUrl = 'https://smartlab-production-c511.up.railway.app';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
+// في ملف manage-staff-services.ts
+deleteAccount(id: string): Observable<any> {
+  return this.http.delete(`${this.baseUrl}/account/deleteStaff/${id}`);
+
+  // تأكد من صحة الـ endpoint الخاص بمسح الحساب في الـ backend
+}
   /*
   Endpoint: POST /account/registerStaff
   Access: Admin Only

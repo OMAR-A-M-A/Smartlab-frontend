@@ -1,108 +1,123 @@
-<h2 mat-dialog-title>Create Staff</h2>
-
-<mat-dialog-content>
-
-  <!-- STEP 1 -->
-  @if(step === 1){
-
-    <h3>Account Info</h3>
-
-    <form [formGroup]="accountForm">
-
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name">
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Phone</mat-label>
-        <input matInput formControlName="phone">
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Email</mat-label>
-        <input matInput formControlName="email">
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password">
-      </mat-form-field>
-
-    </form>
-
-   <button
-   type="button"
-  mat-raised-button
-  color="primary"
-  (click)="nextStep()"
-  [disabled]="accountForm.invalid || loading">
-
-  {{ loading ? 'Creating...' : 'Create Account' }}
-
-</button>
-  }
-
-  <!-- STEP 2 -->
-  @if(step === 2){
-
-    <h3>Job Info</h3>
-
-    <form [formGroup]="jobForm">
-
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>National ID</mat-label>
-        <input matInput formControlName="nationalId">
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Department</mat-label>
-        <mat-select formControlName="department">
-          <mat-option value="Lab">Lab</mat-option>
-          <mat-option value="Reception">Reception</mat-option>
-          <mat-option value="Sampling">Sampling</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Shift</mat-label>
-        <mat-select formControlName="shift">
-          <mat-option value="morning">Morning</mat-option>
-          <mat-option value="evening">Evening</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Salary</mat-label>
-        <input matInput type="number" formControlName="salary">
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Bonus</mat-label>
-        <input matInput type="number" formControlName="bonus">
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>Pay Day</mat-label>
-        <input matInput type="number" formControlName="payDay">
-      </mat-form-field>
-
-    </form>
-
-    <div class="d-flex justify-content-end gap-2">
-      <button mat-button (click)="step = 1">Back</button>
-
-      <button
-        mat-raised-button
-        color="accent"
-        (click)="submitJob()"
-        [disabled]="jobForm.invalid || loading">
-
-        Save Staff
-
-      </button>
+<div class="modal-container">
+  <!-- Header: بعيد عن الحواف ومنظم -->
+  <div class="pt-3 px-2 d-flex justify-content-between align-items-start">
+    <div>
+      <h2 class="form-title m-0">Staff Registration</h2>
+      <p class="text-muted small mb-0">Fill in the details to onboard a new member</p>
     </div>
+    <span class="badge rounded-pill bg-light text-primary border border-primary step-indicator">
+      Step {{ step }} / 2
+    </span>
+  </div>
 
-  }
+  <hr class="mx-2 my-3">
 
-</mat-dialog-content>
+  <mat-dialog-content>
+    <!-- STEP 1: Account Info -->
+    @if (step === 1) {
+      <div class="px-2">
+        <h3 class="h6 fw-bold mb-3 text-secondary">Personal Information</h3>
+        <form [formGroup]="accountForm" class="row g-2">
+          <div class="col-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Full Name</mat-label>
+              <input matInput formControlName="name" placeholder="Ex. John Doe" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Phone Number</mat-label>
+              <input matInput formControlName="phone" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Email Address</mat-label>
+              <input matInput formControlName="email" />
+            </mat-form-field>
+          </div>
+          <div class="col-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Initial Password</mat-label>
+              <input matInput type="password" formControlName="password" />
+            </mat-form-field>
+          </div>
+        </form>
+
+        <div class="d-flex justify-content-end gap-2 mt-4 pb-3">
+          <button mat-button (click)="closeModal()">Cancel</button>
+          <button mat-raised-button color="primary"
+                  (click)="nextStep()"
+                  [disabled]="accountForm.invalid || loading">
+            {{ loading ? 'Saving...' : 'Continue to Job Info' }}
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- STEP 2: Job Info -->
+    @if (step === 2) {
+      <div class="px-2 slide-in">
+        <h3 class="h6 fw-bold mb-1 text-secondary">Job Specifics</h3>
+        <p class="small text-danger mb-3">* Mandatory step to finalize the profile</p>
+
+        <form [formGroup]="jobForm" class="row g-2">
+          <div class="col-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>National ID</mat-label>
+              <input matInput formControlName="nationalId" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Department</mat-label>
+              <mat-select formControlName="department">
+                <mat-option value="Lab">Laboratory</mat-option>
+                <mat-option value="Reception">Reception</mat-option>
+                <mat-option value="Sampling">Sampling</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Shift</mat-label>
+              <mat-select formControlName="shift">
+                <mat-option value="morning">Morning Shift</mat-option>
+                <mat-option value="evening">Evening Shift</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Basic Salary</mat-label>
+              <input matInput type="number" formControlName="salary" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Bonus</mat-label>
+              <input matInput type="number" formControlName="bonus" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-4">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Pay Day</mat-label>
+              <input matInput type="number" formControlName="payDay" />
+            </mat-form-field>
+          </div>
+        </form>
+
+        <div class="d-flex justify-content-end gap-2 mt-4 pb-3">
+          <button mat-button color="warn" (click)="cancelRegistration()" [disabled]="loading">
+            Abort & Delete Account
+          </button>
+          <button mat-raised-button color="accent"
+                  (click)="submitJob()"
+                  [disabled]="jobForm.invalid || loading">
+            {{ loading ? 'Finalizing...' : 'Complete Registration' }}
+          </button>
+        </div>
+      </div>
+    }
+  </mat-dialog-content>
+</div>
