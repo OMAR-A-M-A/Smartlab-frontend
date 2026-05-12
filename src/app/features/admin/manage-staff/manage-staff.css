@@ -1,0 +1,33 @@
+/* إخفاء الـ Scrollbar بشكل نهائي */
+::ng-deep .mat-mdc-dialog-content {
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+::ng-deep .mat-mdc-dialog-content::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* تحسين شكل الـ Modal Container */
+.modal-container {
+  padding: 10px 20px;
+}
+
+.step-indicator {
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.form-title {
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+hr {
+  opacity: 0.1;
+}

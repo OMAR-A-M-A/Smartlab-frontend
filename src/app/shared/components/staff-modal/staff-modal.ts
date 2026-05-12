@@ -2,7 +2,12 @@ import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogContent,
+  MatDialogActions,
+} from '@angular/material/dialog';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -22,21 +27,21 @@ import { ChangeDetectorRef } from '@angular/core'; // ضيف ده فوق
     MatFormFieldModule,
     MatSelectModule,
     MatDialogContent,
-    MatDialogActions],
+  ],
   templateUrl: './staff-modal.html',
 })
 export class StaffModal {
- step = 1;
-accountId!: string;
-loading = false;
+  step = 1;
+  accountId!: string;
+  loading = false;
   accountForm!: FormGroup;
   jobForm!: FormGroup;
 
   constructor(
-   private fb: FormBuilder,
-      private dialogRef: MatDialogRef<StaffModal>,
-      private staffService: ManageStaffServices,
-      private cdr: ChangeDetectorRef, // ضيف ده هنا
+    private fb: FormBuilder,
+    private dialogRef: MatDialogRef<StaffModal>,
+    private staffService: ManageStaffServices,
+    private cdr: ChangeDetectorRef, // ضيف ده هنا
 
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
@@ -55,43 +60,66 @@ loading = false;
       bonus: [0],
       payDay: ['', Validators.required],
     });
+  // في البداية اسمح بالخروج بالضغط بره (Backdrop)
+  this.dialogRef.disableClose = false;
   }
+
+  closeModal() {
+  this.dialogRef.close();
+}
   nextStep() {
     if (this.accountForm.invalid) return;
-
     this.loading = true;
-    const accountData = { ...this.accountForm.value, role: 'staff' };
 
-    this.staffService.registerStaffAccount(accountData).subscribe({
+    this.staffService.registerStaffAccount({ ...this.accountForm.value, role: 'staff' }).subscribe({
       next: (res: any) => {
         this.accountId = res.data?.id || res.data?._id;
-
         if (this.accountId) {
-          // نستخدم setTimeout عشان نهرب من خطأ NG0100
           setTimeout(() => {
             this.step = 2;
             this.loading = false;
-            this.cdr.detectChanges(); // نجبر Angular يلاحظ التغيير
+            // الآن امنع الخروج بالضغط بره نهائياً لأن الحساب اتعمل
+            this.dialogRef.disableClose = true;
+            this.cdr.detectChanges();
           });
-        } else {
-          this.loading = false;
         }
       },
       error: (err) => {
         this.loading = false;
         this.cdr.detectChanges();
-        alert(err.error?.message || 'Error creating account');
+        alert(err.error?.message || 'Error');
       }
     });
   }
-submitJob() {
-  if (this.jobForm.invalid) return;
+  cancelRegistration() {
+    if (!this.accountId) {
+      this.dialogRef.close();
+      return;
+    }
 
-  this.loading = true;
+    this.loading = true;
+    // نقوم بمسح الحساب الذي تم إنشاؤه في الخطوة الأولى
+    this.staffService.deleteAccount(this.accountId).subscribe({
+      next: () => {
+        this.loading = false;
+        this.dialogRef.close(); // نغلق المودال بعد المسح الناجح
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Failed to rollback account', err);
+        this.dialogRef.close(); // نغلق حتى لو فشل المسح (أو اظهر رسالة خطأ)
+      },
+    });
+  }
 
-  this.dialogRef.close({
-    accountId: this.accountId,
-    job: this.jobForm.value
-  });
-}
+  submitJob() {
+    if (this.jobForm.invalid) return;
+
+    this.loading = true;
+
+    this.dialogRef.close({
+      accountId: this.accountId,
+      job: this.jobForm.value,
+    });
+  }
 }
