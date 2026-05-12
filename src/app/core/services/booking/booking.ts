@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class Booking {
-  private baseUrl = 'https://smartlab-back-production.up.railway.app';
+  private baseUrl = 'https://smartlab-production-c511.up.railway.app';
 
   constructor(private http: HttpClient) {}
 

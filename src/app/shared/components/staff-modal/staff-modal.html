@@ -1,0 +1,108 @@
+<h2 mat-dialog-title>Create Staff</h2>
+
+<mat-dialog-content>
+
+  <!-- STEP 1 -->
+  @if(step === 1){
+
+    <h3>Account Info</h3>
+
+    <form [formGroup]="accountForm">
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phone">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password">
+      </mat-form-field>
+
+    </form>
+
+   <button
+   type="button"
+  mat-raised-button
+  color="primary"
+  (click)="nextStep()"
+  [disabled]="accountForm.invalid || loading">
+
+  {{ loading ? 'Creating...' : 'Create Account' }}
+
+</button>
+  }
+
+  <!-- STEP 2 -->
+  @if(step === 2){
+
+    <h3>Job Info</h3>
+
+    <form [formGroup]="jobForm">
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>National ID</mat-label>
+        <input matInput formControlName="nationalId">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Department</mat-label>
+        <mat-select formControlName="department">
+          <mat-option value="Lab">Lab</mat-option>
+          <mat-option value="Reception">Reception</mat-option>
+          <mat-option value="Sampling">Sampling</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Shift</mat-label>
+        <mat-select formControlName="shift">
+          <mat-option value="morning">Morning</mat-option>
+          <mat-option value="evening">Evening</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Salary</mat-label>
+        <input matInput type="number" formControlName="salary">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Bonus</mat-label>
+        <input matInput type="number" formControlName="bonus">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Pay Day</mat-label>
+        <input matInput type="number" formControlName="payDay">
+      </mat-form-field>
+
+    </form>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button mat-button (click)="step = 1">Back</button>
+
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="submitJob()"
+        [disabled]="jobForm.invalid || loading">
+
+        Save Staff
+
+      </button>
+    </div>
+
+  }
+
+</mat-dialog-content>
