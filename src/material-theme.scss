@@ -5,6 +5,7 @@ html {
     color: (
       primary: mat.$azure-palette,
       tertiary: mat.$blue-palette,
+      warn: mat.$red-palette, // أضف هذا السطر لتعريف اللون الأحمر
     ),
     typography: Roboto,
     density: 0,

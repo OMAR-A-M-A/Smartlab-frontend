@@ -52,10 +52,23 @@
       </ng-container>
 
       <!-- Actions -->
+      <!-- Actions Column -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let row">
-          <button mat-raised-button color="warn" (click)="deleteStaff(row._id)">Delete</button>
+          <div class="d-flex gap-2">
+            <!-- زرار التعديل الجديد -->
+            <button mat-stroked-button color="primary"  size="small" (click)="openEditModal(row)">
+              <mat-icon class="me-1">edit</mat-icon>
+              Edit
+            </button>
+
+            <!-- زرار المسح -->
+            <button mat-stroked-button color="warn" (click)="deleteStaff(row._id)">
+              <mat-icon class="me-1">delete</mat-icon>
+              Delete
+            </button>
+          </div>
         </td>
       </ng-container>
 
