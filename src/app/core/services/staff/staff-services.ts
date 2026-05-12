@@ -51,4 +51,8 @@ export class ManageStaffServices {
   deleteStaff(id: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/account/deleteStaff/${id}`);
   }
+
+
+  // تأكد من صحة الـ endpoint الخاص بمسح الحساب في الـ backend
 }
+
