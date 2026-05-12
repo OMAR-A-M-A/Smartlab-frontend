@@ -7,10 +7,7 @@ import { ReportResponse , Report} from '../../../shared/interfaces/report.interf
   providedIn: 'root',
 })
 export class Reports {
-  getPatientProfile() {
-    throw new Error('Method not implemented.');
-  }
-  private baseUrl = 'https://smartlab-back-production.up.railway.app';
+  private baseUrl = 'https://smartlab-production-c511.up.railway.app';
 
   constructor(private http: HttpClient) {}
 
