@@ -48,8 +48,11 @@ export class ManageStaffServices {
   Endpoint: DELETE /staff/:id
   Access: Admin Only
   */
-  deleteStaff(id: string): Observable<any> {
+  deleteStaffAccount(id: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/account/deleteStaff/${id}`);
+  }
+  deleteStaff(id: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/staff/${id}`);
   }
 
 

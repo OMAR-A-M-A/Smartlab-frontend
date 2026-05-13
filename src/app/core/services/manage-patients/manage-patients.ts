@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class ManagePatients {
-  private baseUrl = 'https://smartlab-production-55e4.up.railway.app/';
+export default class ManagePatients {
+  private baseUrl = 'https://smartlab-production-55e4.up.railway.app';
 
   constructor(private http: HttpClient) {}
 
@@ -16,6 +16,13 @@ export class ManagePatients {
   */
   getAllPatients(): Observable<any> {
     return this.http.get(`${this.baseUrl}/patients`);
+  }
+  createPatient(patientData: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/patients`, patientData);
+  }
+
+    RegisterPatientAccount(userData: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/account/registerPatient`, userData);
   }
 
   /*
@@ -38,6 +45,9 @@ export class ManagePatients {
   Endpoint: DELETE /patients/:id
   Access: Admin / Staff
   */
+  deletePatientAccount(id: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/account/deletePatient/${id}`);
+  }
   deletePatient(id: string): Observable<any> {
     return this.http.delete(`${this.baseUrl}/patients/${id}`);
   }
