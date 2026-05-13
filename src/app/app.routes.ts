@@ -107,7 +107,7 @@ export const routes: Routes = [
       {
         path: 'reports',
         loadComponent: () =>
-          import('./features/shared-dashboard/reports/reports').then((c) => c.Reports),
+          import('./features/shared-dashboard/reports/reports').then((c) => c.ManageReports),
       },
       {
         path: 'settings',
@@ -172,7 +172,7 @@ export const routes: Routes = [
       {
         path: 'reports',
         loadComponent: () =>
-          import('./features/shared-dashboard/reports/reports').then((c) => c.Reports),
+          import('./features/shared-dashboard/reports/reports').then((c) => c.ManageReports),
       },
       {
         path: 'settings',

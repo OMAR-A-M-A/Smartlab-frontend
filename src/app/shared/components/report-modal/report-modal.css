@@ -1,0 +1,37 @@
+/* Typography & General */
+.modal-wrapper { font-family: 'Public Sans', sans-serif; color: #1e293b; }
+.modal-header-custom { padding: 20px 0; }
+.modal-title { font-weight: 700; color: #0f172a; margin-bottom: 5px; }
+.modal-subtitle { color: #64748b; font-size: 14px; }
+
+/* Section Card */
+.section-card { background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
+.section-title { font-size: 18px; font-weight: 700; color: #334155; }
+
+/* Custom Form Controls */
+.form-label-custom { display: block; font-weight: 600; font-size: 14px; margin-bottom: 8px; color: #475569; }
+.form-label-small { display: block; font-weight: 600; font-size: 12px; margin-bottom: 4px; color: #64748b; }
+
+.form-control-custom {
+  width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px;
+  font-size: 14px; transition: all 0.2s; background: white;
+}
+.form-control-custom:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+.form-control-custom.highlight { border-color: #3b82f6; font-weight: 700; color: #2563eb; }
+
+/* Test Item Card */
+.test-item-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; position: relative; }
+.test-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.test-number { font-weight: 700; font-size: 12px; color: #3b82f6; text-transform: uppercase; letter-spacing: 1px; }
+
+/* Buttons */
+.btn-add-test { background: #e0f2fe; color: #0369a1; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: 0.2s; }
+.btn-add-test:hover { background: #bae6fd; }
+
+.btn-submit-main { background: #2563eb; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: 700; transition: 0.2s; }
+.btn-submit-main:hover { background: #1d4ed8; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+
+.btn-remove { background: #fee2e2; color: #ef4444; border: none; width: 28px; height: 28px; border-radius: 6px; font-size: 14px; }
+
+/* Custom Checkbox */
+.custom-checkbox { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #dc2626; }

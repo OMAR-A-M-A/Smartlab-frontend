@@ -1,1 +1,70 @@
-<p>reports works!</p>
+<div class="main-page p-4" dir="ltr">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold m-0">Laboratory Reports</h3>
+      <p class="text-muted small m-0">View and manage all diagnostic records.</p>
+    </div>
+    <div class="d-flex gap-2">
+    
+      <button class="btn btn-primary px-4 shadow-sm" (click)="openAddModal()">
+        <i class="fa fa-plus me-2"></i> Create Report
+      </button>
+    </div>
+  </div>
+
+  <div class="row mb-4 g-3">
+    <div class="col-md-3" *ngFor="let card of [
+      {title:'Today Tests', count:24, icon:'fa-microscope'},
+      {title:'Pending Tests', count:10, icon:'fa-clock'},
+      {title:'Abnormal Tests', count:4, icon:'fa-triangle-exclamation'},
+      {title:'Completed Tests', count:7, icon:'fa-check-circle'}
+    ]">
+      <div class="card p-3 border-0 shadow-sm h-100 bg-white">
+        <div class="icon-box-subtle mb-3"><i class="fa-solid {{card.icon}}"></i></div>
+        <p class="text-muted m-0 small fw-medium">{{card.title}}</p>
+        <h2 class="fw-bold m-0" style="color: #1e293b;">{{card.count}}</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 12px;">
+    <table class="table mb-0 align-middle">
+      <thead style="background-color: #f1f7ff;">
+        <tr>
+          <th class="p-3 text-secondary small fw-bold">PATIENT ID</th>
+          <th class="p-3 text-secondary small fw-bold">PATIENT</th>
+          <th class="p-3 text-secondary small fw-bold">REPORT CONTENT</th> <th class="p-3 text-secondary small fw-bold">STATUS</th>
+          <th class="p-3 text-secondary small fw-bold text-center">ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let report of reports">
+          <td class="p-3 text-muted small">#{{report.patient?.slice(-6) || report._id?.slice(-6)}}</td>
+          <td class="p-3 fw-bold text-dark">{{report.patientName || 'Patient Name'}}</td>
+          
+          <td class="p-3">
+            <div class="d-flex flex-wrap gap-1">
+              <span *ngFor="let t of report.tests" class="badge-test">
+                {{t.testName}} <span class="text-primary">({{t.result}})</span>
+              </span>
+            </div>
+          </td>
+
+          <td class="p-3">
+            <span class="status-badge" [ngClass]="report.reportStatus?.toLowerCase() || 'pending'">
+              {{report.reportStatus || 'pending'}}
+            </span>
+          </td>
+          <td class="p-3 text-center">
+            <button class="btn btn-action-edit me-2" (click)="openEditModal(report)">
+              <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+            <button class="btn btn-action-delete" (click)="deleteReport(report._id)">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
