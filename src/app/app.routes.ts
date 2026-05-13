@@ -47,8 +47,8 @@ export const routes: Routes = [
   // ==========================================
   {
     path: 'patient',
-    canActivate: [authGuard, roleGuard],
-    data: { role: 'patient' },
+    // canActivate: [authGuard, roleGuard],
+    // data: { role: 'patient' },
     children: [
       {
         path: 'dashboard',
@@ -82,8 +82,8 @@ export const routes: Routes = [
   // ==========================================
   {
     path: 'staff',
-    canActivate: [authGuard, roleGuard],
-    data: { role: 'staff' },
+    // canActivate: [authGuard, roleGuard],
+    // data: { role: 'staff' },
     children: [
       {
         path: 'dashboard',
@@ -118,8 +118,8 @@ export const routes: Routes = [
   // ==========================================
   {
     path: 'admin',
-    canActivate: [authGuard, roleGuard],
-    data: { role: 'admin' },
+    // canActivate: [authGuard, roleGuard],
+    // data: { role: 'admin' },
     children: [
       {
         path: 'dashboard',

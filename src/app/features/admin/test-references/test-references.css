@@ -1,0 +1,11 @@
+.action-btn {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+.action-btn:hover {
+    transform: scale(1.1);
+}
+.table thead th {
+    border-bottom: 2px solid #f8f9fa;
+    padding: 15px 10px;
+}

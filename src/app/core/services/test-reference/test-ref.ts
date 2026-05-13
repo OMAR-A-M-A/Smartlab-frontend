@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class TestRef {
-  private baseUrl = 'https://smartlab-back-production.up.railway.app';
+  private baseUrl = 'https://smartlab-production-55e4.up.railway.app';
 
   constructor(private http: HttpClient) {}
 
