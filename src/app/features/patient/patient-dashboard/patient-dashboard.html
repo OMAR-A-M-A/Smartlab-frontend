@@ -1,1 +1,126 @@
-<p>patient-dashboard works!</p>
+<div class="dash-container">
+
+  <!-- Header -->
+  <div class="dash-header">
+    <div>
+      @if (isLoading) {
+        <h1 class="dash-title">Welcome back</h1>
+      } @else {
+        <h1 class="dash-title">Welcome back {{ patientName }}</h1>
+      }
+      <p class="dash-subtitle">Here's an overview of your health activity and upcoming appointments.</p>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    @for (stat of statsCards; track stat.title) {
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon" [style.backgroundColor]="stat.bg" [style.color]="stat.color">
+            <i [class]="stat.icon" style="font-size: 20px;"></i>
+          </div>
+          <span class="stat-label">{{ stat.title }}</span>
+        </div>
+        <div class="stat-number">
+          @if (isLoading) {
+            <span class="placeholder-glow"><span class="placeholder col-4"></span></span>
+          } @else {
+            {{ stat.value }}
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="bottom-grid">
+
+    <div class="ui-card">
+      <div class="ui-card-header">
+        <h3 class="ui-card-title">Recent Appointments</h3>
+        <a routerLink="/patient/my-appointments" class="ui-link">view all</a>
+      </div>
+
+      @if (isLoading) {
+        <div class="text-center py-5 text-muted d-flex flex-column align-items-center justify-content-center"
+          style="min-height: 100px;">
+          <i class="fa-solid fa-spinner fa-spin fa-2x mb-2 text-primary"></i>
+          <span class="small">Loading appointments...</span>
+        </div>
+      } @else if (recentAppointments.length === 0) {
+        <div class="empty-state">
+          <i class="fa-regular fa-calendar-xmark"></i>
+          <p>No appointments yet</p>
+        </div>
+      } @else {
+        <div class="appt-list">
+          @for (appt of recentAppointments; track appt._id) {
+            <div class="appt-item">
+              <div class="appt-icon-wrap">
+                <i class="fa-solid text-primary"
+                  [class.fa-flask]="appt.appointmentType === 'Lab-Visit'"
+                  [class.fa-house-medical]="appt.appointmentType === 'Home-Visit'">
+                </i>
+              </div>
+              <div class="appt-info">
+                <p class="appt-type">{{ appt.appointmentType === 'Lab-Visit' ? 'Lab Visit' : 'Home Visit' }}</p>
+                <span class="appt-date">
+                  <i class="fa-regular fa-calendar me-1"></i>{{ formatDate(appt.appointmentDate) }}
+                  &nbsp;·&nbsp;
+                  <i class="fa-regular fa-clock me-1"></i>{{ appt.time }}
+                </span>
+              </div>
+              <span class="appt-badge"
+                [ngClass]="{
+                  'badge-pending':   appt.status === 'Pending',
+                  'badge-confirmed': appt.status === 'Confirmed',
+                  'badge-cancelled': appt.status === 'Cancelled',
+                  'badge-completed': appt.status === 'Completed'
+                }">
+                {{ appt.status }}
+              </span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="ui-card">
+      <div class="ui-card-header">
+        <h3 class="ui-card-title">Recent Reports</h3>
+        <a routerLink="/patient/reports" class="ui-link">view all</a>
+      </div>
+
+      @if (isLoading) {
+        <div class="text-center py-5 text-muted d-flex flex-column align-items-center justify-content-center"
+          style="min-height: 100px;">
+          <i class="fa-solid fa-spinner fa-spin fa-2x mb-2 text-primary"></i>
+          <span class="small">Loading reports...</span>
+        </div>
+      } @else if (recentReports.length === 0) {
+        <div class="empty-state">
+          <i class="fa-regular fa-file-lines"></i>
+          <p>No reports available</p>
+        </div>
+      } @else {
+        <div class="notif-list">
+          @for (report of recentReports; track report._id) {
+            <div class="notif-item" [ngClass]="getReportBorderClass(report)">
+              <div class="notif-text">
+                <p>
+                  <strong>{{ report.tests.length }} Test{{ report.tests.length > 1 ? 's' : '' }}</strong>
+                  &nbsp;·&nbsp; Ref: {{ report.referredBy }}
+                </p>
+                <span>{{ formatDate(report.requestDate || report.createdAt || '') }}</span>
+              </div>
+              <span class="report-status-badge" [ngClass]="getReportBadgeClass(report)">
+                {{ report.reportStatus || 'Pending' }}
+              </span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+  </div>
+</div>
