@@ -1,0 +1,138 @@
+/* Page Setup */
+.page-container {
+  max-width: 1300px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  direction: ltr;
+}
+
+.fs-7 {
+  font-size: 0.75rem;
+}
+
+.max-w-md {
+  max-width: 500px;
+}
+
+/* Custom Card Matching Theme */
+.custom-card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid #f1f3f5 !important;
+}
+
+/* Custom Table Tweaks */
+.custom-table th {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #e9ecef;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.custom-table td {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+/* Custom Buttons */
+.custom-btn-sm {
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 0.35rem 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.custom-btn {
+  border-radius: 8px;
+  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+}
+
+/* Critical Counter Badge */
+.badge-critical-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #fee2e2;
+  color: #991b1b;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  border: 1px solid #fca5a5;
+}
+
+/* Red Pulsing Dot */
+.pulse-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #dc2626;
+  border-radius: 50%;
+  display: block;
+  box-shadow: 0 0 0 rgba(220, 38, 38, 0.4);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+/* Custom Alerts */
+.custom-alert {
+  border-radius: 10px;
+  border: none;
+  border-left: 4px solid;
+}
+
+.alert-success.custom-alert { border-left-color: #10b981; }
+.alert-danger.custom-alert { border-left-color: #ef4444; }
+
+/* Empty State Icon */
+.empty-icon {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+/* ======================================================= */
+/* Custom Angular JS-free Modal Backdrop */
+/* ======================================================= */
+.custom-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(17, 24, 39, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.custom-modal-width {
+  width: 100%;
+  max-width: 550px;
+  margin: 1rem;
+}
+
+.leading-relaxed {
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .custom-table { min-width: 800px; }
+  .badge-critical-counter { font-size: 0.85rem; padding: 0.4rem 0.8rem; }
+}
