@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ManageStaffServices } from '../../../core/services/staff/staff-services';
 import { ChangeDetectorRef } from '@angular/core'; // ضيف ده فوق
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-staff-modal',
@@ -27,6 +28,7 @@ import { ChangeDetectorRef } from '@angular/core'; // ضيف ده فوق
     MatFormFieldModule,
     MatSelectModule,
     MatDialogContent,
+    MatSnackBarModule
   ],
   templateUrl: './staff-modal.html',
 })
@@ -43,6 +45,7 @@ export class StaffModal {
     private dialogRef: MatDialogRef<StaffModal>,
     private staffService: ManageStaffServices,
     private cdr: ChangeDetectorRef, // ضيف ده هنا
+    private snackBar: MatSnackBar,
 
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
@@ -142,6 +145,7 @@ export class StaffModal {
     this.staffService.registerStaffAccount({ ...this.accountForm.value, role: 'staff' }).subscribe({
       next: (res: any) => {
         this.accountId = res.data?.id || res.data?._id;
+        this.showMessage('Account created successfully');
         if (this.accountId) {
           setTimeout(() => {
             this.step = 2;
@@ -155,7 +159,7 @@ export class StaffModal {
       error: (err) => {
         this.loading = false;
         this.cdr.detectChanges();
-        alert(err.error?.message || 'Error');
+        this.showMessage(err.error?.message || 'Registration failed', true);
       },
     });
   }
@@ -195,5 +199,12 @@ export class StaffModal {
       // المنطق القديم للإضافة
       this.dialogRef.close({ accountId: this.accountId, job: this.jobForm.value });
     }
+  }
+
+  showMessage(message: string, isError = false) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: isError ? ['error-snackbar'] : ['success-snackbar'],
+    });
   }
 }
