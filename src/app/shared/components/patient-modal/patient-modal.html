@@ -1,0 +1,126 @@
+<div class="modal-container">
+  <div class="pt-3 px-2 d-flex justify-content-between align-items-start">
+    <div>
+      <h2 class="form-title m-0">
+        {{ isEditMode ? 'Update Medical Info' : 'Patient Registration' }}
+      </h2>
+      <p class="text-muted small mb-0">
+        {{ isEditMode ? 'Edit details for patient' : 'Follow steps to register a new patient' }}
+      </p>
+    </div>
+    @if (!isEditMode) {
+      <span class="badge rounded-pill bg-light text-primary border border-primary">
+        Step {{ step }} / 2
+      </span>
+    }
+  </div>
+
+  <hr class="mx-2 my-3" />
+
+  <mat-dialog-content>
+    <!-- STEP 1: Account Info -->
+    @if (step === 1 && !isEditMode) {
+      <form [formGroup]="accountForm" class="row g-2">
+        <div class="col-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Full Name</mat-label>
+            <input matInput formControlName="name" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Phone</mat-label>
+            <input matInput formControlName="phone" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" />
+          </mat-form-field>
+        </div>
+        <div class="col-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password" />
+          </mat-form-field>
+        </div>
+        <div class="d-flex justify-content-end gap-2 mt-3">
+          <button mat-button (click)="closeModal()">Cancel</button>
+          <button mat-raised-button color="primary" (click)="nextStep()" [disabled]="accountForm.invalid || loading">
+            Next: Medical Info
+          </button>
+        </div>
+      </form>
+    }
+
+    <!-- STEP 2: Medical Info -->
+    @if (step === 2) {
+      <form [formGroup]="medicalForm" class="row g-2">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Gender</mat-label>
+            <mat-select formControlName="gender">
+              <mat-option value="male">Male</mat-option>
+              <mat-option value="female">Female</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Age</mat-label>
+            <input matInput type="number" formControlName="age" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Weight (kg)</mat-label>
+            <input matInput type="number" formControlName="weight" />
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Height (cm)</mat-label>
+            <input matInput type="number" formControlName="height" />
+          </mat-form-field>
+        </div>
+        <div class="col-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Chronic Diseases (comma separated)</mat-label>
+            <input matInput formControlName="chronicDiseases" />
+          </mat-form-field>
+        </div>
+        <div class="col-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Previous Surgeries</mat-label>
+            <input matInput formControlName="previousSurgeries" />
+          </mat-form-field>
+        </div>
+        <div class="col-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Current Medications</mat-label>
+            <input matInput formControlName="medications" />
+          </mat-form-field>
+        </div>
+         <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>isSmoker</mat-label>
+            <mat-select formControlName="isSmoker">
+              <mat-option [value]="true">Yes</mat-option>
+              <mat-option [value]="false">No</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+          <!-- زر الحذف والتراجع -->
+          <button mat-button color="warn" (click)="cancelRegistration()">
+            {{ isEditMode ? 'Cancel' : 'Abort & Delete' }}
+          </button>
+          <button mat-raised-button color="accent" (click)="submit()" [disabled]="medicalForm.invalid">
+            {{ isEditMode ? 'Update' : 'Complete' }}
+          </button>
+        </div>
+      </form>
+    }
+  </mat-dialog-content>
+</div>

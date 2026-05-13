@@ -172,7 +172,7 @@ export class StaffModal {
     }
     this.loading = true;
     // نقوم بمسح الحساب الذي تم إنشاؤه في الخطوة الأولى
-    this.staffService.deleteStaff(this.accountId).subscribe({
+    this.staffService.deleteStaffAccount(this.accountId).subscribe({
       next: () => {
         this.loading = false;
         this.dialogRef.close(); // نغلق المودال بعد المسح الناجح
