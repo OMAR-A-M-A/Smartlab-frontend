@@ -73,13 +73,6 @@ export const routes: Routes = [
             (c) => c.MyAppointments,
           ),
       },
-      {
-        path: 'settings',
-        loadComponent: () =>
-          import('./shared/components/account-settings/account-settings').then(
-            (c) => c.AccountSettings,
-          ),
-      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
