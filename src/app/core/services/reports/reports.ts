@@ -7,7 +7,10 @@ import { ReportResponse , Report} from '../../../shared/interfaces/report.interf
   providedIn: 'root',
 })
 export class Reports {
-  private baseUrl = 'https://smartlab-production-55e4.up.railway.app/';
+  // getPatientProfile() {
+  //   throw new Error('Method not implemented.');
+  // }
+  private baseUrl = 'https://smartlab-production-55e4.up.railway.app';
 
   constructor(private http: HttpClient) {}
 

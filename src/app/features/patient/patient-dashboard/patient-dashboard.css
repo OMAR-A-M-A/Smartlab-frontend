@@ -1,0 +1,217 @@
+/* ===== نفس tokens داش الأدمن ===== */
+.dash-container {
+  padding: 30px;
+  font-family: 'Inter', sans-serif;
+  color: #1e293b;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dash-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+.dash-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+.dash-subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: #fff;
+  border: 1px solid #eaecf0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.stat-card:hover {
+  box-shadow: 0 4px 12px rgba(16, 24, 40, 0.08);
+  transform: translateY(-2px);
+}
+.stat-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.stat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.stat-label {
+  font-size: 15px;
+  color: #475467;
+  font-weight: 500;
+}
+.stat-number {
+  font-size: 36px;
+  font-weight: 700;
+  color: #101828;
+}
+
+/* Bottom Grid */
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+}
+.ui-card {
+  background: #fff;
+  border: 1px solid #eaecf0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+}
+.ui-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.ui-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+.ui-link {
+  font-size: 14px;
+  color: #475467;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.ui-link:hover { color: #1877f2; }
+
+/* Appointments */
+.appt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.appt-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #f2f4f7;
+  background: #fafafa;
+  transition: background 0.2s;
+}
+.appt-item:hover { background: #f0f7ff; }
+.appt-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 15px;
+}
+.appt-info { flex: 1; }
+.appt-type {
+  margin: 0 0 2px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #344054;
+}
+.appt-date {
+  font-size: 12px;
+  color: #98a2b3;
+}
+
+/* Badges */
+.appt-badge, .report-status-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.badge-pending   { background: #fff7e6; color: #b45309; border: 1px solid #fde68a; }
+.badge-confirmed { background: #e6f9f0; color: #15803d; border: 1px solid #bbf7d0; }
+.badge-cancelled { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+.badge-completed { background: #e6f0ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+
+/* Reports - نفس notif style الأدمن */
+.notif-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.notif-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-radius: 8px;
+  border-left: 4px solid transparent;
+}
+.notif-text p {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: #344054;
+}
+.notif-text span {
+  font-size: 12px;
+  color: #98a2b3;
+}
+.active-blue {
+  background: #eff8ff;
+  border-left-color: #1877f2;
+}
+.alert-yellow {
+  background: #fff;
+  border-left-color: #eab308;
+  border-top: 1px solid #f2f4f7;
+  border-right: 1px solid #f2f4f7;
+  border-bottom: 1px solid #f2f4f7;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #94a3b8;
+}
+.empty-state i {
+  font-size: 32px;
+  margin-bottom: 10px;
+  display: block;
+  opacity: 0.5;
+}
+.empty-state p {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .bottom-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 576px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .dash-container { padding: 16px; }
+}
