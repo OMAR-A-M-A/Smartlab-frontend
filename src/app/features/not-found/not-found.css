@@ -1,0 +1,81 @@
+.notfound-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background:
+    radial-gradient(circle at top left, #f1f5f9, #e2e8f0);
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.notfound-card {
+  width: 100%;
+  max-width: 520px;
+  background: #fff;
+  border-radius: 24px;
+  padding: 50px 35px;
+  text-align: center;
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e2e8f0;
+}
+
+.error-code {
+  font-size: 110px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 16px;
+  color: #0f172a;
+  letter-spacing: -4px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #1e293b;
+}
+
+.subtitle {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #64748b;
+  margin-bottom: 32px;
+}
+
+.home-btn {
+  border: none;
+  background: #0f172a;
+  color: #fff;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.home-btn:hover {
+  background: #1e293b;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 576px) {
+
+  .notfound-card {
+    padding: 40px 24px;
+  }
+
+  .error-code {
+    font-size: 80px;
+  }
+
+  .title {
+    font-size: 26px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+}
