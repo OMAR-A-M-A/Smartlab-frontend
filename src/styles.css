@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+
 html {
   scroll-padding-top: 80px;
   scroll-behavior: smooth;
@@ -7,4 +8,13 @@ html {
   background: transparent !important;
   box-shadow: none !important;
   padding: 0 !important;
+}
+.success-snackbar {
+  --mdc-snackbar-container-color: #2e7d32;
+  --mat-mdc-snack-bar-button-color: white;
+}
+
+.error-snackbar {
+  --mdc-snackbar-container-color: #d32f2f;
+  --mat-mdc-snack-bar-button-color: white;
 }

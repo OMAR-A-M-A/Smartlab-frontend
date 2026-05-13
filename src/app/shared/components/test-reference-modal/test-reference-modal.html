@@ -1,0 +1,82 @@
+<div class="p-4 custom-modal-container" style="max-height: 90vh; overflow-y: auto;">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold m-0" style="color: #2c3e50;">
+      {{ isEditMode ? 'Edit Test Reference' : 'Add New Reference' }}
+    </h3>
+    <button type="button" class="btn-close" (click)="closeModal()"></button>
+  </div>
+
+  <form [formGroup]="testForm" (ngSubmit)="submit()">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label small fw-bold text-secondary text-uppercase">Test Name</label>
+        <input type="text" formControlName="testName" class="form-control rounded-3 border-0 bg-light p-2">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small fw-bold text-secondary text-uppercase">Category</label>
+        <input type="text" formControlName="category" class="form-control rounded-3 border-0 bg-light p-2">
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label small fw-bold text-secondary text-uppercase">Applicable To</label>
+        <select formControlName="applicableTo" class="form-select rounded-3 border-0 bg-light p-2">
+          <option *ngFor="let opt of applicableToOptions" [value]="opt">{{opt}}</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small fw-bold text-secondary text-uppercase">Unit</label>
+        <input type="text" formControlName="unit" class="form-control rounded-3 border-0 bg-light p-2">
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label small fw-bold text-secondary text-uppercase">Min Value</label>
+        <input type="number" formControlName="min" class="form-control rounded-3 border-0 bg-light p-2">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small fw-bold text-secondary text-uppercase">Max Value</label>
+        <input type="number" formControlName="max" class="form-control rounded-3 border-0 bg-light p-2">
+      </div>
+
+      <div class="col-12" formGroupName="criticalRange">
+        <div class="p-3 rounded-3" style="background-color: #fff5f5; border: 1px dashed #feb2b2;">
+          <label class="fw-bold text-danger small mb-2 text-uppercase">Critical Limits (Emergency)</label>
+          <div class="row g-2">
+            <div class="col-6"><input type="number" formControlName="low" class="form-control border-0 shadow-sm" placeholder="Low"></div>
+            <div class="col-6"><input type="number" formControlName="high" class="form-control border-0 shadow-sm" placeholder="High"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12" formGroupName="adviceTemplates">
+        <label class="fw-bold text-primary small mb-2 text-uppercase">Advice Templates</label>
+        <div class="row g-2">
+          <div class="col-md-6"><input type="text" formControlName="normal" class="form-control form-control-sm" placeholder="Normal Advice"></div>
+          <div class="col-md-6"><input type="text" formControlName="low" class="form-control form-control-sm" placeholder="Low Advice"></div>
+          <div class="col-md-6"><input type="text" formControlName="high" class="form-control form-control-sm" placeholder="High Advice"></div>
+          <div class="col-md-6"><input type="text" formControlName="critical" class="form-control form-control-sm" placeholder="Critical Advice"></div>
+          <div class="col-md-6">
+             <label class="small fw-bold text-secondary">Referral</label>
+             <input type="text" formControlName="referral" class="form-control form-control-sm" placeholder="Specialty">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <label class="form-label small fw-bold text-secondary text-uppercase">Reference Text Preview</label>
+        <input type="text" formControlName="referenceText" class="form-control rounded-3 border-0 bg-light p-2" readonly>
+      </div>
+
+      <div *ngIf="testForm.hasError('rangeError')" class="col-12 text-danger small fw-bold">
+        * Max must be greater than Min.
+      </div>
+
+      <div class="col-12 mt-4 d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-light px-4" (click)="closeModal()">Cancel</button>
+        <button type="submit" class="btn text-white px-4 shadow-sm" [disabled]="testForm.invalid || loading" style="background-color: #3498db;">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+          {{ isEditMode ? 'Update' : 'Save' }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

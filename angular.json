@@ -30,7 +30,10 @@
               "src/styles.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
-            "scripts": ["node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" ,
+              "node_modules/apexcharts/dist/apexcharts.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -51,7 +54,13 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/app/core/environments/environment.ts",
+                  "with": "src/app/core/environments/environment.development.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
