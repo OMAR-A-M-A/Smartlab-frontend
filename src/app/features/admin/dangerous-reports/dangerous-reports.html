@@ -1,1 +1,182 @@
-<p>dangerous-reports works!</p>
+<div class="container-fluid py-4 page-container">
+
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h1 class="h3 fw-bold text-dark mb-1">Critical & Dangerous Reports</h1>
+      <p class="text-muted small mb-0">Real-time monitoring and immediate alerts for high-risk laboratory results</p>
+    </div>
+
+    <div class="badge-critical-counter" *ngIf="!isLoading && dangerousReports.length > 0">
+      <span class="pulse-dot"></span>
+      Critical Cases: {{ dangerousReports.length }}
+    </div>
+  </div>
+
+  <div class="alert alert-success custom-alert shadow-sm mb-4" role="alert" *ngIf="emailSuccessMsg">
+    <div class="d-flex align-items-center">
+      <span class="fs-5 me-2">✓</span>
+      <div>{{ emailSuccessMsg }}</div>
+    </div>
+  </div>
+
+  <div class="alert alert-danger custom-alert shadow-sm mb-4" role="alert" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="text-center py-5" *ngIf="isLoading">
+    <div class="spinner-border text-primary mb-3" role="status"></div>
+    <p class="text-muted">Fetching critical lab reports...</p>
+  </div>
+
+  <div class="card border-0 custom-card shadow-sm" *ngIf="!isLoading">
+    <div class="card-body p-0">
+
+      <div class="table-responsive" *ngIf="dangerousReports.length > 0; else emptyState">
+        <table class="table table-hover align-middle mb-0 custom-table">
+          <thead class="table-light text-uppercase fs-7 text-muted">
+            <tr>
+              <th class="ps-4">Patient Name</th>
+              <th>Test Details</th>
+              <th>Result Value</th>
+              <th>Normal Range</th>
+              <th>Status</th>
+              <th>Referred By</th>
+              <th>Date</th>
+              <th class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let report of dangerousReports">
+
+              <td class="ps-4">
+                <div class="fw-semibold text-dark">{{ report.patient?.name || 'Unknown Patient' }}</div>
+                <div class="text-muted small">{{ report.patient?.phone || 'No Phone' }}</div>
+              </td>
+
+              <td>
+                <div class="fw-medium text-dark">
+                  {{ report.tests?.[0]?.testId?.testName || 'Laboratory Test' }}
+                </div>
+                <div class="text-muted small">
+                  {{ report.tests?.[0]?.testId?.category || 'General' }}
+                </div>
+              </td>
+
+              <td>
+                <span class="fw-bold text-danger fs-6">
+                  {{ report.tests?.[0]?.result || 'N/A' }}
+                </span>
+                <span class="text-muted small ms-1">
+                  {{ report.tests?.[0]?.testId?.unit || '' }}
+                </span>
+              </td>
+
+              <td class="text-muted small">
+                {{ report.tests?.[0]?.testId?.min ?? '-' }} – {{ report.tests?.[0]?.testId?.max ?? '-' }}
+              </td>
+
+              <td>
+                <span
+                  class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1">
+                  CRITICAL ({{ report.status || 'H' }})
+                </span>
+              </td>
+
+              <td class="text-muted small">
+                {{ report.referredBy || 'Self' }}
+              </td>
+
+              <td class="text-muted small">
+                {{ (report.createdAt | date:'shortDate') || 'Recent' }}
+              </td>
+
+              <td class="text-end pe-4">
+                <div class="d-flex justify-content-end gap-2">
+                  <button class="btn btn-sm btn-outline-secondary custom-btn-sm" title="View Advice & Details"
+                    (click)="openReportModal(report)">
+                    View
+                  </button>
+
+                  <button class="btn btn-sm btn-danger custom-btn-sm" title="Send Urgent Email Alert"
+                    [disabled]="isSendingEmail" (click)="sendEmailNotification(report)">
+                    Alert Patient
+                  </button>
+                </div>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #emptyState>
+        <div class="text-center py-5 px-3">
+          <div class="empty-icon mb-3">🎉</div>
+          <h4 class="fw-bold text-dark mb-1">Excellent News!</h4>
+          <p class="text-muted max-w-md mx-auto mb-0">
+            No dangerous or critical reports found. All recent laboratory tests fall within acceptable medical
+            thresholds.
+          </p>
+        </div>
+      </ng-template>
+
+    </div>
+  </div>
+
+  <div class="custom-modal-backdrop" *ngIf="isModalOpen" (click)="closeModal()">
+    <div class="modal-dialog modal-dialog-centered custom-modal-width" (click)="$event.stopPropagation()">
+      <div class="modal-content border-0 shadow-lg rounded-4" *ngIf="selectedReport">
+
+        <div class="modal-header border-bottom-0 pb-0">
+          <h5 class="modal-title fw-bold text-dark">Critical Report Advice</h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+
+        <div class="modal-body pt-3">
+
+          <div class="p-3 bg-light rounded-3 mb-4">
+            <div class="row g-2 text-dark">
+              <div class="col-6">
+                <span class="text-muted small d-block">Patient:</span>
+                <span class="fw-semibold">{{ selectedReport.patient?.name || 'N/A' }}</span>
+              </div>
+              <div class="col-6">
+                <span class="text-muted small d-block">Test Name:</span>
+                <span class="fw-semibold">{{ selectedReport.tests?.[0]?.testId?.testName || 'Lab Test' }}</span>
+              </div>
+              <div class="col-6 mt-2">
+                <span class="text-muted small d-block">Recorded Value:</span>
+                <span class="fw-bold text-danger">{{ selectedReport.tests?.[0]?.result || 'N/A' }} {{
+                  selectedReport.tests?.[0]?.testId?.unit || '' }}</span>
+              </div>
+              <div class="col-6 mt-2">
+                <span class="text-muted small d-block">Status:</span>
+                <span class="badge bg-danger">Critical Risk</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="advice-section">
+            <h6 class="fw-bold text-secondary mb-2">Automated Medical Advice</h6>
+            <div
+              class="p-3 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded-3 text-danger fs-6 leading-relaxed">
+              {{ selectedReport.patientAdvice || 'Immediate medical consultation is highly recommended based on these
+              critical test indicators.' }}
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer border-top-0 pt-0">
+          <button type="button" class="btn btn-secondary custom-btn" (click)="closeModal()">Close</button>
+          <button type="button" class="btn btn-danger custom-btn" [disabled]="isSendingEmail"
+            (click)="sendEmailNotification(selectedReport)">
+            Send Email Alert
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
