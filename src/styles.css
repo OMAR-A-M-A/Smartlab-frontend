@@ -4,3 +4,12 @@ html {
   scroll-padding-top: 80px;
   scroll-behavior: smooth;
 }
+.success-snackbar {
+  --mdc-snackbar-container-color: #2e7d32;
+  --mat-mdc-snack-bar-button-color: white;
+}
+
+.error-snackbar {
+  --mdc-snackbar-container-color: #d32f2f;
+  --mat-mdc-snack-bar-button-color: white;
+}

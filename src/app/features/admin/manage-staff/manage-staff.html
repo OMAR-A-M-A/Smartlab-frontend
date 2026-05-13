@@ -6,7 +6,13 @@
   </div>
 
   <mat-form-field appearance="outline" class="w-100 mb-3">
-    <input matInput placeholder="Search..." (keyup)="applyFilter($event)" />
+    <mat-label>Search Patients</mat-label>
+
+    <mat-icon matPrefix>search</mat-icon>
+
+    <input matInput placeholder="Name / Email " (keyup)="applyFilter($event)" />
+
+    <mat-hint>Search using patient name, email, or patient ID</mat-hint>
   </mat-form-field>
 
   <div class="mat-elevation-z8 rounded overflow-hidden">
