@@ -3,185 +3,201 @@ import { authGuard } from './core/guards/auth/auth-guard';
 import { roleGuard } from './core/guards/role/role-guard';
 
 export const routes: Routes = [
-  // ==========================================
-  // (Public & Auth Routes)
-  // ==========================================
   {
     path: '',
-    loadComponent: () => import('./features/landing-page/landing-page').then((c) => c.LandingPage),
-  },
-  {
-    path: 'login',
-    loadComponent: () => import('./features/auth/login/login').then((c) => c.Login),
-  },
-  {
-    path: 'register',
     loadComponent: () =>
-      import('./features/auth/register-patient/register-patient').then((c) => c.RegisterPatient),
-  },
-  {
-    path: 'forgot-password',
-    loadComponent: () =>
-      import('./features/auth/forgot-password/forgot-password').then((c) => c.ForgotPassword),
-  },
-  {
-    path: 'reset-password/:token',
-    loadComponent: () =>
-      import('./features/auth/reset-password/reset-password').then((c) => c.ResetPassword),
-  },
-
-  {
-    path: 'change-password',
-    loadComponent: () =>
-      import('./features/auth/change-password/change-password').then((c) => c.ChangePassword),
-    canActivate: [authGuard],
-  },
-  {
-    path: 'appointments',
-    loadComponent: () =>
-      import('./features/patient/appointments/appointments').then((c) => c.Appointments),
-  },
-
-  // ==========================================
-  // (Patient Routes)
-  // ==========================================
-  {
-    path: 'patient',
-    // canActivate: [authGuard, roleGuard],
-    // data: { role: 'patient' },
+      import('./shared/components/layouts/main-layout/main-layout').then((c) => c.MainLayout),
     children: [
+      // --- Public & Auth Paths ---
       {
-        path: 'dashboard',
+        path: '',
         loadComponent: () =>
-          import('./features/patient/patient-dashboard/patient-dashboard').then(
-            (c) => c.PatientDashboard,
+          import('./features/landing-page/landing-page').then((c) => c.LandingPage),
+      },
+      {
+        path: 'login',
+        loadComponent: () => import('./features/auth/login/login').then((c) => c.Login),
+      },
+      {
+        path: 'register',
+        loadComponent: () =>
+          import('./features/auth/register-patient/register-patient').then(
+            (c) => c.RegisterPatient,
           ),
       },
       {
-        path: 'profile',
-        loadComponent: () => import('./features/patient/profile/profile').then((c) => c.Profile),
+        path: 'forgot-password',
+        loadComponent: () =>
+          import('./features/auth/forgot-password/forgot-password').then((c) => c.ForgotPassword),
       },
       {
-        path: 'reports',
+        path: 'reset-password/:token',
         loadComponent: () =>
-          import('./features/patient/my-reports/my-reports').then((c) => c.MyReports),
+          import('./features/auth/reset-password/reset-password').then((c) => c.ResetPassword),
       },
       {
-        path: 'my-appointments',
+        path: 'change-password',
         loadComponent: () =>
-          import('./features/patient/my-appointments/my-appointments').then(
-            (c) => c.MyAppointments,
-          ),
+          import('./features/auth/change-password/change-password').then((c) => c.ChangePassword),
+        canActivate: [authGuard],
       },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {
+        path: 'appointments',
+        loadComponent: () =>
+          import('./features/patient/appointments/appointments').then((c) => c.Appointments),
+      },
     ],
   },
 
-  // ==========================================
-  // (Staff Routes)
-  // ==========================================
   {
-    path: 'staff',
-    // canActivate: [authGuard, roleGuard],
-    // data: { role: 'staff' },
+    path: '',
+    loadComponent: () =>
+      import('./shared/components/layouts/dashboard-layout/dashboard-layout').then(
+        (c) => c.DashboardLayout,
+      ),
     children: [
+      // --- Protected Patient Path Group ---
       {
-        path: 'dashboard',
-        loadComponent: () =>
-          import('./features/staff/staff-dashboard/staff-dashboard').then((c) => c.StaffDashboard),
+        path: 'patient',
+        canActivate: [authGuard, roleGuard],
+        data: { role: 'patient' },
+        children: [
+          {
+            path: 'dashboard',
+            loadComponent: () =>
+              import('./features/patient/patient-dashboard/patient-dashboard').then(
+                (c) => c.PatientDashboard,
+              ),
+          },
+          {
+            path: 'profile',
+            loadComponent: () =>
+              import('./features/patient/profile/profile').then((c) => c.Profile),
+          },
+          {
+            path: 'reports',
+            loadComponent: () =>
+              import('./features/patient/my-reports/my-reports').then((c) => c.MyReports),
+          },
+          {
+            path: 'my-appointments',
+            loadComponent: () =>
+              import('./features/patient/my-appointments/my-appointments').then(
+                (c) => c.MyAppointments,
+              ),
+          },
+          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+        ],
       },
+      // --- Protected Staff Path Group ---
       {
-        path: 'schedule',
-        loadComponent: () =>
-          import('./features/shared-dashboard/daily-schedule/daily-schedule').then(
-            (c) => c.DailySchedule,
-          ),
+        path: 'staff',
+        canActivate: [authGuard, roleGuard],
+        data: { role: 'staff' },
+        children: [
+          {
+            path: 'dashboard',
+            loadComponent: () =>
+              import('./features/staff/staff-dashboard/staff-dashboard').then(
+                (c) => c.StaffDashboard,
+              ),
+          },
+          {
+            path: 'schedule',
+            loadComponent: () =>
+              import('./features/shared-dashboard/daily-schedule/daily-schedule').then(
+                (c) => c.DailySchedule,
+              ),
+          },
+          {
+            path: 'manage-patients',
+            loadComponent: () =>
+              import('./features/shared-dashboard/manage-patients/manage-patients').then(
+                (c) => c.ManagePatients,
+              ),
+          },
+          {
+            path: 'reports',
+            loadComponent: () =>
+              import('./features/shared-dashboard/reports/reports').then((c) => c.Reports),
+          },
+          {
+            path: 'settings',
+            loadComponent: () =>
+              import('./shared/components/account-settings/account-settings').then(
+                (c) => c.AccountSettings,
+              ),
+          },
+          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+        ],
       },
-      {
-        path: 'manage-patients',
-        loadComponent: () =>
-          import('./features/shared-dashboard/manage-patients/manage-patients').then(
-            (c) => c.ManagePatients,
-          ),
-      },
-      {
-        path: 'reports',
-        loadComponent: () =>
-          import('./features/shared-dashboard/reports/reports').then((c) => c.Reports),
-      },
-      {
-        path: 'settings',
-        loadComponent: () =>
-          import('./shared/components/account-settings/account-settings').then(
-            (c) => c.AccountSettings,
-          ),
-      },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-    ],
-  },
 
-  // ==========================================
-  // (Admin Routes)
-  // ==========================================
-  {
-    path: 'admin',
-    // canActivate: [authGuard, roleGuard],
-    // data: { role: 'admin' },
-    children: [
+      // --- Protected Admin Path Group ---
       {
-        path: 'dashboard',
-        loadComponent: () =>
-          import('./features/admin/admin-dashboard/admin-dashboard').then((c) => c.AdminDashboard),
+        path: 'admin',
+        canActivate: [authGuard, roleGuard],
+        data: { role: 'admin' },
+        children: [
+          {
+            path: 'dashboard',
+            loadComponent: () =>
+              import('./features/admin/admin-dashboard/admin-dashboard').then(
+                (c) => c.AdminDashboard,
+              ),
+          },
+          {
+            path: 'manage-staff',
+            loadComponent: () =>
+              import('./features/admin/manage-staff/manage-staff').then((c) => c.ManageStaff),
+          },
+          {
+            path: 'lab-settings',
+            loadComponent: () =>
+              import('./features/admin/lab-settings/lab-settings').then((c) => c.LabSettings),
+          },
+          {
+            path: 'test-references',
+            loadComponent: () =>
+              import('./features/admin/test-references/test-references').then(
+                (c) => c.TestReferences,
+              ),
+          },
+          {
+            path: 'dangerous-reports',
+            loadComponent: () =>
+              import('./features/admin/dangerous-reports/dangerous-reports').then(
+                (c) => c.DangerousReports,
+              ),
+          },
+          {
+            path: 'schedule',
+            loadComponent: () =>
+              import('./features/shared-dashboard/daily-schedule/daily-schedule').then(
+                (c) => c.DailySchedule,
+              ),
+          },
+          {
+            path: 'manage-patients',
+            loadComponent: () =>
+              import('./features/shared-dashboard/manage-patients/manage-patients').then(
+                (c) => c.ManagePatients,
+              ),
+          },
+          {
+            path: 'reports',
+            loadComponent: () =>
+              import('./features/shared-dashboard/reports/reports').then((c) => c.Reports),
+          },
+          {
+            path: 'settings',
+            loadComponent: () =>
+              import('./shared/components/account-settings/account-settings').then(
+                (c) => c.AccountSettings,
+              ),
+          },
+          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+        ],
       },
-      {
-        path: 'manage-staff',
-        loadComponent: () =>
-          import('./features/admin/manage-staff/manage-staff').then((c) => c.ManageStaff),
-      },
-      {
-        path: 'lab-settings',
-        loadComponent: () =>
-          import('./features/admin/lab-settings/lab-settings').then((c) => c.LabSettings),
-      },
-      {
-        path: 'test-references',
-        loadComponent: () =>
-          import('./features/admin/test-references/test-references').then((c) => c.TestReferences),
-      },
-      {
-        path: 'dangerous-reports',
-        loadComponent: () =>
-          import('./features/admin/dangerous-reports/dangerous-reports').then(
-            (c) => c.DangerousReports,
-          ),
-      },
-      {
-        path: 'schedule',
-        loadComponent: () =>
-          import('./features/shared-dashboard/daily-schedule/daily-schedule').then(
-            (c) => c.DailySchedule,
-          ),
-      },
-      {
-        path: 'manage-patients',
-        loadComponent: () =>
-          import('./features/shared-dashboard/manage-patients/manage-patients').then(
-            (c) => c.ManagePatients,
-          ),
-      },
-      {
-        path: 'reports',
-        loadComponent: () =>
-          import('./features/shared-dashboard/reports/reports').then((c) => c.Reports),
-      },
-      {
-        path: 'settings',
-        loadComponent: () =>
-          import('./shared/components/account-settings/account-settings').then(
-            (c) => c.AccountSettings,
-          ),
-      },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
 

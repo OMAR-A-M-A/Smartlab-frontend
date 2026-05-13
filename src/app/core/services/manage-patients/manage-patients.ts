@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment.development';
 @Injectable({
   providedIn: 'root',
 })
-export default class ManagePatients {
+export class ManagePatients {
   private baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}

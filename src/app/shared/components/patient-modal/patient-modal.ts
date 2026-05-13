@@ -16,7 +16,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ChangeDetectorRef } from '@angular/core'; // ضيف ده فوق
 import { MatIconModule } from '@angular/material/icon';
-import ManagePatientsServices from '../../../core/services/manage-patients/manage-patients'; // ضيف خدمة المرضى
+import {ManagePatients} from '../../../core/services/manage-patients/manage-patients'; // ضيف خدمة المرضى
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 
