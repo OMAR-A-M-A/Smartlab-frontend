@@ -16,7 +16,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ChangeDetectorRef } from '@angular/core'; // ضيف ده فوق
 import { MatIconModule } from '@angular/material/icon';
-import ManagePatientsServices from '../../../core/services/manage-patients/manage-patients'; // ضيف خدمة المرضى
+import {ManagePatients} from '../../../core/services/manage-patients/manage-patients'; // ضيف خدمة المرضى
 
 @Component({
   selector: 'app-patient-modal',
@@ -44,7 +44,7 @@ export class PatientModal {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<PatientModal>,
-    private patientService: ManagePatientsServices, // الخدمة الخاصة بالمرضى
+    private patientService: ManagePatients, // الخدمة الخاصة بالمرضى
     private cdr: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {

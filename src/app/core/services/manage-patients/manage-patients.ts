@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export default class ManagePatients {
+export class ManagePatients {
   private baseUrl = 'https://smartlab-production-55e4.up.railway.app';
 
   constructor(private http: HttpClient) {}

@@ -12,7 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 import { MatIconModule, MatIcon } from '@angular/material/icon';
-import ManagePatientsServices from '../../../core/services/manage-patients/manage-patients';
+import {ManagePatients as ManPatient} from '../../../core/services/manage-patients/manage-patients';
 import { Component, OnInit, ViewChild } from '@angular/core';
 
 @Component({
@@ -41,7 +41,7 @@ export class ManagePatients implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
-    private PatientService: ManagePatientsServices,
+    private PatientService: ManPatient,
     private dialog: MatDialog,
   ) {}
 
@@ -49,7 +49,7 @@ export class ManagePatients implements OnInit {
     this.PatientService.getAllPatients().subscribe({
       next: (res) => {
         this.dataSource.data = res.data.patients;
-        
+
 
         setTimeout(() => {
           this.dataSource.paginator = this.paginator;
