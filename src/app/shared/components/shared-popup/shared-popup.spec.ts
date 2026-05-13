@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CustomModal } from './custom-modal';
+import { SharedPopup } from './shared-popup';
 
-describe('CustomModal', () => {
-  let component: CustomModal;
-  let fixture: ComponentFixture<CustomModal>;
+describe('SharedPopup', () => {
+  let component: SharedPopup;
+  let fixture: ComponentFixture<SharedPopup>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CustomModal],
+      imports: [SharedPopup],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(CustomModal);
+    fixture = TestBed.createComponent(SharedPopup);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
