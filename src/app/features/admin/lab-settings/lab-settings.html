@@ -1,1 +1,147 @@
-<p>lab-settings works!</p>
+<div class="settings-page-container">
+
+  <div class="page-header mt-3">
+    <div>
+      <h1 class="page-title">Lab System & Settings</h1>
+      <p class="page-subtitle">Manage official working hours, slot durations, and weekly off days</p>
+    </div>
+
+    <button *ngIf="isAdmin" class="btn-primary" [disabled]="isLoading" (click)="openEditModal()">
+      Edit Settings
+    </button>
+  </div>
+
+  <div class="alert-success" *ngIf="successMessage">
+    {{ successMessage }}
+  </div>
+
+  <div class="alert-danger" *ngIf="errorMessage && !isEditModalOpen">
+    {{ errorMessage }}
+  </div>
+
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading lab settings...</p>
+  </div>
+
+  <div class="cards-grid my-5" *ngIf="!isLoading && currentSettings">
+
+    <div class="settings-card">
+      <div class="card-icon hours-icon">🕒</div>
+      <h3 class="card-title">Official Working Hours</h3>
+      <div class="card-content">
+        <div class="time-block">
+          <span class="label">From:</span>
+          <span class="value">{{ currentSettings.workingHours?.start || 'Not specified' }}</span>
+        </div>
+        <div class="time-block">
+          <span class="label">To:</span>
+          <span class="value">{{ currentSettings.workingHours?.end || 'Not specified' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <div class="card-icon slot-icon">⏳</div>
+      <h3 class="card-title">Slot Duration</h3>
+      <div class="card-content centered-content">
+        <span class="highlight-value">{{ currentSettings.slotDuration || 30 }}</span>
+        <span class="unit">Minutes / Slot</span>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <div class="card-icon off-icon">📅</div>
+      <h3 class="card-title">Weekly Off Days</h3>
+      <div class="card-content">
+        <div class="off-days-list" *ngIf="currentSettings.offDays?.length; else noOffDays">
+          <span class="day-badge" *ngFor="let day of currentSettings.offDays">
+            {{ day }}
+          </span>
+        </div>
+        <ng-template #noOffDays>
+          <p class="text-muted">No off days specified (Open all week)</p>
+        </ng-template>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-overlay" *ngIf="isEditModalOpen" (click)="closeModal()">
+
+    <div class="custom-modal-dialog" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h2>Edit Lab Settings</h2>
+        <button class="btn-close" (click)="closeModal()">&times;</button>
+      </div>
+
+      <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
+        <div class="modal-body">
+
+          <div class="alert-danger" *ngIf="errorMessage">
+            {{ errorMessage }}
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Start Time</label>
+              <input type="time" formControlName="start" class="form-control" />
+              <span class="error-text" *ngIf="settingsForm.get('start')?.touched && settingsForm.get('start')?.invalid">
+                Start time is required
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label>End Time</label>
+              <input type="time" formControlName="end" class="form-control" />
+              <span class="error-text" *ngIf="settingsForm.get('end')?.touched && settingsForm.get('end')?.invalid">
+                End time is required
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group mt-3">
+            <label>Slot Duration (Minutes)</label>
+            <select formControlName="slotDuration" class="form-control">
+              <option [value]="10">10 Minutes</option>
+              <option [value]="15">15 Minutes</option>
+              <option [value]="20">20 Minutes</option>
+              <option [value]="30">30 Minutes</option>
+              <option [value]="45">45 Minutes</option>
+              <option [value]="60">60 Minutes</option>
+            </select>
+          </div>
+
+          <div class="form-group mt-4">
+            <label class="mb-2">Weekly Off Days</label>
+            <div class="checkbox-grid">
+              <div class="custom-checkbox-card" *ngFor="let day of weekDays" [class.selected]="isDaySelected(day)"
+                (click)="toggleOffDay(day)">
+
+                <div class="checkbox-circle">
+                  <span *ngIf="isDaySelected(day)">✓</span>
+                </div>
+                <span class="day-name">{{ day }}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" (click)="closeModal()" [disabled]="isSaving">
+            Cancel
+          </button>
+
+          <button type="submit" class="btn-primary" [disabled]="isSaving">
+            <span *ngIf="!isSaving">Save Changes</span>
+            <span *ngIf="isSaving">Saving...</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+</div>
