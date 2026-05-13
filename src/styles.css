@@ -3,3 +3,8 @@ html {
   scroll-padding-top: 80px;
   scroll-behavior: smooth;
 }
+.custom-dialog-container .mdc-dialog__surface {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
