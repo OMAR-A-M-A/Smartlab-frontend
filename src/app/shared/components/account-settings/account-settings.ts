@@ -23,21 +23,21 @@ export class AccountSettings implements OnInit {
 
   // Identity Data
   currentUser: any = {
-    firstName: 'Mohamed',
-    lastName: 'Ali Mettwally',
-    email: 'alimettwally@gmail.com',
-    phone: '01081111111',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
   };
 
-  // 🌟 Placeholder Staff Data (Until API is ready)
   staffInfo: any = {
-    department: 'Laboratory',
-    shift: 'Morning Shift',
-    salary: '8,500 EGP',
-    nationalId: '298XXXXXXXXXXX',
+    department: 'Loading...',
+    shift: 'Loading...',
+    salary: 'Loading...',
+    nationalId: 'Loading...',
   };
 
   userRole: string = '';
+  isLoadingStaffData: boolean = false;
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
 
@@ -52,6 +52,9 @@ export class AccountSettings implements OnInit {
     this.detectUserRole();
     this.initForms();
     this.loadUserData();
+    if (this.userRole === 'staff') {
+      this.fetchStaffProfileData();
+    }
   }
 
   detectUserRole(): void {
@@ -100,7 +103,38 @@ export class AccountSettings implements OnInit {
       } catch (e) {}
     }
   }
+  fetchStaffProfileData(): void {
+    this.isLoadingStaffData = true;
+    this.cdr.detectChanges();
 
+    this.authService.getStaffProfile().subscribe({
+      next: (res) => {
+        // Adapt checks gracefully to handle raw payloads or nested data keys
+        const data = res?.data || res;
+        if (data) {
+          this.staffInfo = {
+            department: data.department || 'Unassigned',
+            shift: data.shift || 'Standard Shift',
+            salary: data.salary ? `${data.salary} EGP` : 'Confidential',
+            nationalId: data.nationalId || 'N/A',
+          };
+        }
+        this.isLoadingStaffData = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('API integration exception while retrieving staff profile:', err);
+        this.staffInfo = {
+          department: 'Unavailable',
+          shift: 'Unavailable',
+          salary: 'Confidential',
+          nationalId: 'Unavailable',
+        };
+        this.isLoadingStaffData = false;
+        this.cdr.detectChanges();
+      },
+    });
+  }
   // --- Handlers ---
   openProfileModal(): void {
     this.errorMessage = '';
@@ -178,5 +212,10 @@ export class AccountSettings implements OnInit {
         this.cdr.detectChanges();
       },
     });
+  }
+
+  get profileImage(): string {
+    const gender = this.authService.getUserGender();
+    return gender === 'female' ? '/images/female-avatar.png' : '/images/male-avatar.png';
   }
 }

@@ -1,0 +1,43 @@
+<div class="popup-container">
+  <button *ngIf="data.showClose" class="close-btn" (click)="dialogRef.close('close')">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+
+  <div class="icon-section" [ngClass]="data.type">
+    <div class="icon-circle">
+      <i *ngIf="data.type === 'success'" class="fa-solid fa-check"></i>
+      <i *ngIf="data.type === 'danger'" class="fa-solid fa-trash-can"></i>
+    </div>
+  </div>
+
+  <div class="content-section">
+    <h2 class="title">{{ data.title }}</h2>
+
+    <p class="description" *ngIf="data.patientName">
+      {{ data.descriptionTextBeforeName }}
+      <span class="patient-name-highlight">{{ data.patientName }}</span>
+      {{ data.descriptionTextAfterName }}
+    </p>
+
+    <p class="description" *ngIf="data.fullDescription && !data.patientName">
+      {{ data.fullDescription }}
+    </p>
+  </div>
+
+  <div *ngIf="data.patientId" class="id-box-container">
+    <label>Patient ID</label>
+    <div class="id-field">
+      <span class="id-text">{{ data.patientId }}</span>
+      <button class="copy-btn" (click)="copyId()" title="Copy ID">
+        <i class="fa-regular fa-copy"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="actions-section" [class.single-btn]="data.actions.length === 1">
+    <button *ngFor="let action of data.actions" class="btn" [ngClass]="'btn-' + action.type"
+      (click)="onAction(action.value)">
+      {{ action.label }}
+    </button>
+  </div>
+</div>

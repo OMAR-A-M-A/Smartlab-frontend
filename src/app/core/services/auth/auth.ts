@@ -36,6 +36,10 @@ export class Auth {
     return this.http.patch(`${this.baseUrl}/account/updateProfile`, profileData);
   }
 
+  getStaffProfile(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/staff/staffProfile`);
+  }
+
   //functions to use in auth
   saveToken(token: string): void {
     localStorage.setItem('token', token);
