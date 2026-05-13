@@ -109,6 +109,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/shared-dashboard/reports/reports').then((c) => c.Reports),
       },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./shared/components/account-settings/account-settings').then(
+            (c) => c.AccountSettings,
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
@@ -166,6 +173,13 @@ export const routes: Routes = [
         path: 'reports',
         loadComponent: () =>
           import('./features/shared-dashboard/reports/reports').then((c) => c.Reports),
+      },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./shared/components/account-settings/account-settings').then(
+            (c) => c.AccountSettings,
+          ),
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
