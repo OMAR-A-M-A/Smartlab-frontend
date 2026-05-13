@@ -1,37 +1,80 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table'; // مكتبة الجدول
-import { MatButtonModule } from '@angular/material/button'; // مكتبة الزراير
-import { MatIconModule } from '@angular/material/icon'; // مكتبة الأيقونات
-import { MatChipsModule } from '@angular/material/chips'; // عشان الـ Status بشكل شيك
+import { Booking } from '../../../core/services/booking/booking';
+import { timer, Subscription, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-daily-schedule',
   standalone: true,
-  imports: [
-    CommonModule, 
-    MatTableModule, 
-    MatButtonModule, 
-    MatIconModule, 
-    MatChipsModule
-  ],
+  imports: [CommonModule],
   templateUrl: './daily-schedule.html',
-  styleUrl: './daily-schedule.css'
+  styleUrls: ['./daily-schedule.css']
 })
-export class DailySchedule {
-  isLoading = false; // لو خليتيها true هيظهر الـ Spinner
+export class DailySchedule implements OnInit, OnDestroy {
+  private scheduleService = inject(Booking);
   
-  appointments = [
-    { id: 1, time: '09:00 AM', patientName: 'Eman Mohamed', testType: 'CBC', status: 'Pending' },
-    { id: 2, time: '10:30 AM', patientName: 'Marwa Emam', testType: 'Glucose', status: 'Completed' }
-  ];
+  appointments: any[] = [];
 
-  loadDailyAppointments() {
-    this.isLoading = true;
-    // محاكاة تحميل البيانات
-    setTimeout(() => { this.isLoading = false; }, 1000);
+  
+  selectedDate: string = new Date().toISOString().split('T')[0];
+  loading = false;
+  private pollingSub?: Subscription;
+
+  ngOnInit() {
+    this.startPolling();
   }
 
-  onComplete(id: any) { console.log('Completed:', id); }
-  onCancel(id: any) { console.log('Cancelled:', id); }
+  startPolling() {
+    this.pollingSub = timer(0, 30000)
+      .pipe(
+        switchMap(() => {
+          this.loading = true; 
+          return this.scheduleService.getDailySchedule(this.selectedDate);
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          this.appointments = res.data; 
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error fetching appointments:', err);
+          this.loading = false;
+        }
+      });
+  }
+
+  onDateChange(event: any) {
+    this.selectedDate = event.target.value;
+    
+    this.refreshData();
+  }
+
+  refreshData() {
+    this.loading = true;
+    this.scheduleService.getDailySchedule(this.selectedDate).subscribe({
+      next: (res) => {
+        this.appointments = res.data;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error(err);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.pollingSub?.unsubscribe();
+  }
+getStats(type: 'total' | 'cancelled' | 'home'): number {
+  if (!this.appointments) return 0;
+  
+  switch(type) {
+    case 'total': return this.appointments.length;
+    case 'cancelled': return this.appointments.filter(a => a.status?.toLowerCase() === 'cancelled').length;
+    case 'home': return this.appointments.filter(a => a.appointmentType === 'Home-Visit').length;
+    default: return 0;
+  }
+}
 }
