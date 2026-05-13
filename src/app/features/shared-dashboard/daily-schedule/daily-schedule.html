@@ -1,55 +1,79 @@
-<div class="container-fluid p-4 text-start"> 
-  <div class="row mb-4 shadow-sm p-3 bg-white rounded border-0">
-    <div class="col-md-6">
-      <h3 class="text-primary m-0 fw-bold"><i class="bi bi-calendar-check-fill me-2"></i>Daily Schedule</h3>
-      <small class="text-muted">View today's patient visits</small>
-    </div>
-    <div class="col-md-6 text-end">
-      <button class="btn btn-outline-primary btn-sm rounded-pill px-3" (click)="loadDailyAppointments()">
-        <i class="bi bi-arrow-clockwise"></i> Refresh Data
-      </button>
+<div class="container-fluid py-4" style="background-color: #f8f9fa; min-height: 100vh;">
+  
+  <div class="d-flex justify-content-between align-items-center mb-4 px-3">
+    <h2 class="fw-bold m-0 text-dark">Laboratory Schedule</h2>
+    <div class="bg-white p-2 rounded-3 shadow-sm border">
+      <input type="date" [value]="selectedDate" (change)="onDateChange($event)" class="border-0 fw-bold outline-none">
     </div>
   </div>
 
-  <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead class="table-light">
-            <tr>
-              <th class="ps-4 py-3">Time</th>
-              <th>Patient Name</th>
-              <th>Test Category</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (item of appointments; track item.id) {
-              <tr>
-                <td class="ps-4 fw-bold text-secondary">{{ item.time }}</td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <div class="avatar-sm me-2 bg-primary-subtle rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                      <i class="bi bi-person-fill text-primary"></i>
-                    </div>
-                    <span class="fw-medium text-dark">{{ item.patientName }}</span>
-                  </div>
-                </td>
-                <td><span class="badge rounded-pill bg-light text-dark border fw-normal">{{ item.testType }}</span></td>
-                <td>
-                  <span class="badge px-3 py-2" [ngClass]="{
-                    'bg-success-subtle text-success border border-success-subtle': item.status === 'Completed',
-                    'bg-warning-subtle text-warning border border-warning-subtle': item.status === 'Pending',
-                    'bg-danger-subtle text-danger border border-danger-subtle': item.status === 'Cancelled'
-                  }">
-                    {{ item.status }}
-                  </span>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
+  <div class="row mb-4 px-3">
+    <div class="col-md-4">
+      <div class="card border-0 shadow p-3 border-start border-primary border-5 rounded-4">
+        <h6 class="text-muted small fw-bold text-uppercase">Total</h6>
+        <h3 class="fw-bold mb-0">{{ appointments?.length || 0 }}</h3>
       </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow p-3 border-start border-info border-5 rounded-4">
+        <h6 class="text-muted small fw-bold text-uppercase">Home Visits</h6>
+        <h3 class="fw-bold mb-0 text-info">{{ getStats('home') }}</h3>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow p-3 border-start border-danger border-5 rounded-4">
+        <h6 class="text-muted small fw-bold text-uppercase">Cancelled</h6>
+        <h3 class="fw-bold mb-0 text-danger">{{ getStats('cancelled') }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 mx-3 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="bg-light">
+          <tr>
+            <th class="ps-4 py-3">PATIENT</th>
+            <th>TIME</th>
+            <th>VISIT DETAILS</th>
+            <th class="text-center">STATUS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let app of appointments">
+            <td class="ps-4">
+              <div class="fw-bold text-dark">{{ app.patient?.name || app.patient || 'N/A' }}</div>
+              <small class="text-muted">ID: {{ app._id || app.id || '---' }}</small>
+            </td>
+            
+            <td class="fw-bold text-primary">
+              <i class="far fa-clock me-1"></i> {{ app.time || 'Not Set' }}
+            </td>
+
+            <td style="max-width: 400px;">
+              <div class="small text-muted">
+                <div *ngIf="app.appointmentType === 'Home-Visit'" class="text-info fw-bold mb-1">
+                  <i class="fas fa-map-marker-alt"></i> {{ app.address || 'Address missing' }}
+                </div>
+                <div>
+                  <i class="fas fa-info-circle opacity-50"></i> {{ app.notes || 'No notes' }}
+                </div>
+              </div>
+            </td>
+
+            <td class="text-center">
+              <span class="badge rounded-pill px-3 py-2 border w-75" 
+                    [ngClass]="{
+                      'bg-success bg-opacity-10 text-success border-success': app.status?.toLowerCase() === 'confirmed',
+                      'bg-danger bg-opacity-10 text-danger border-danger': app.status?.toLowerCase() === 'cancelled'
+                    }"
+                    style="font-size: 0.85rem; font-weight: 700;">
+                {{ app.status || 'Unknown' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
