@@ -5,10 +5,12 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class ManageStaff {
-  private baseUrl = 'https://smartlab-back-production.up.railway.app';
+export class ManageStaffServices {
+  private baseUrl = 'https://smartlab-production-55e4.up.railway.app';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
+
+// في ملف manage-staff-services.ts
 
   /*
   Endpoint: POST /account/registerStaff
@@ -47,6 +49,10 @@ export class ManageStaff {
   Access: Admin Only
   */
   deleteStaff(id: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/staff/${id}`);
+    return this.http.delete(`${this.baseUrl}/account/deleteStaff/${id}`);
   }
+
+
+  // تأكد من صحة الـ endpoint الخاص بمسح الحساب في الـ backend
 }
+
