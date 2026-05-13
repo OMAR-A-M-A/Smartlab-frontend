@@ -1,1 +1,64 @@
-<p>test-references works!</p>
+<div class="container-fluid py-4" style="background-color: #f8f9fa; min-height: 100vh;">
+  <div class="d-flex justify-content-between align-items-center mb-4 px-3">
+    <div>
+      <h2 class="fw-bold text-dark m-0">Test References</h2>
+      <p class="text-muted small">Manage laboratory ranges and critical values</p>
+    </div>
+    <button class="btn btn-primary px-4 shadow-sm d-flex align-items-center gap-2" 
+            (click)="openAddModal()" 
+            style="border-radius: 10px; background-color: #3498db; border: none;">
+      <i class="fa-solid fa-plus"></i> Add New Reference
+    </button>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 mx-3 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead style="background-color: #f1f4f8;">
+          <tr>
+            <th class="ps-4 py-3 text-secondary small fw-bold">TEST & REFERRAL</th>
+            <th class="py-3 text-secondary small fw-bold">CATEGORY</th>
+            <th class="py-3 text-secondary small fw-bold">NORMAL RANGE</th>
+            <th class="py-3 text-secondary small fw-bold">CRITICAL (L/H)</th>
+            <th class="py-3 text-secondary small fw-bold">APPLICABLE TO</th>
+            <th class="py-3 text-center text-secondary small fw-bold">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of tests">
+            <td class="ps-4">
+              <div class="fw-bold text-dark">{{ item.testName }}</div>
+              <span class="text-muted small"><i class="fa-solid fa-stethoscope me-1"></i>{{ item.referral || 'General' }}</span>
+            </td>
+            <td>
+              <span class="badge rounded-pill px-3 py-2 bg-info bg-opacity-10 text-info">
+                {{ item.category }}
+              </span>
+            </td>
+            <td>
+              <span class="fw-bold">{{ item.min }} - {{ item.max }}</span> <small class="text-muted">{{ item.unit }}</small>
+            </td>
+            <td>
+              <span *ngIf="item.criticalRange" class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-10">
+                L: {{ item.criticalRange.low }} / H: {{ item.criticalRange.high }}
+              </span>
+            </td>
+            <td>
+              <span class="badge bg-light text-dark border">{{ item.applicableTo }}</span>
+            </td>
+            <td class="text-center">
+              <div class="d-flex justify-content-center gap-2">
+                <button class="btn btn-sm text-primary" (click)="openEditModal(item)">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="btn btn-sm text-danger" (click)="deleteTest(item._id)">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

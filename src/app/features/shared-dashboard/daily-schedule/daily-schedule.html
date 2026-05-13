@@ -1,1 +1,55 @@
-<p>daily-schedule works!</p>
+<div class="container-fluid p-4 text-start"> 
+  <div class="row mb-4 shadow-sm p-3 bg-white rounded border-0">
+    <div class="col-md-6">
+      <h3 class="text-primary m-0 fw-bold"><i class="bi bi-calendar-check-fill me-2"></i>Daily Schedule</h3>
+      <small class="text-muted">View today's patient visits</small>
+    </div>
+    <div class="col-md-6 text-end">
+      <button class="btn btn-outline-primary btn-sm rounded-pill px-3" (click)="loadDailyAppointments()">
+        <i class="bi bi-arrow-clockwise"></i> Refresh Data
+      </button>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4 py-3">Time</th>
+              <th>Patient Name</th>
+              <th>Test Category</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of appointments; track item.id) {
+              <tr>
+                <td class="ps-4 fw-bold text-secondary">{{ item.time }}</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-sm me-2 bg-primary-subtle rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                      <i class="bi bi-person-fill text-primary"></i>
+                    </div>
+                    <span class="fw-medium text-dark">{{ item.patientName }}</span>
+                  </div>
+                </td>
+                <td><span class="badge rounded-pill bg-light text-dark border fw-normal">{{ item.testType }}</span></td>
+                <td>
+                  <span class="badge px-3 py-2" [ngClass]="{
+                    'bg-success-subtle text-success border border-success-subtle': item.status === 'Completed',
+                    'bg-warning-subtle text-warning border border-warning-subtle': item.status === 'Pending',
+                    'bg-danger-subtle text-danger border border-danger-subtle': item.status === 'Cancelled'
+                  }">
+                    {{ item.status }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
