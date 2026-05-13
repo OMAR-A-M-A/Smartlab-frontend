@@ -34,9 +34,9 @@
         <a class="btn btn-primary fw-semibold px-4 rounded-2 shadow-sm" routerLink="/login">Login</a>
         } @else {
         <div class="d-flex align-items-center gap-3 border-start ps-3" style="cursor: pointer"
-          (click)="navigateToDashboard()">
+          >
 
-          <span class="fw-bold text-primary">
+          <span class="fw-bold btn btn-sm btn-outline-primary rounded-3" (click)="navigateToDashboard()">
             {{ userRole === 'patient' ? 'My Results' : 'Dashboard' }}
           </span>
 

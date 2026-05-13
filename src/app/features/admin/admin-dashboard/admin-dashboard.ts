@@ -8,11 +8,11 @@ import { ManagePatients as PatientService} from '../../../core/services/manage-p
 import { Booking } from '../../../core/services/booking/booking';
 import { ManageStaffServices } from '../../../core/services/staff/staff-services';
 import { TestRef } from '../../../core/services/test-reference/test-ref';
-
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [CommonModule, NgApexchartsModule],
+  imports: [CommonModule, NgApexchartsModule, RouterModule],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
 })
@@ -23,7 +23,6 @@ export class AdminDashboard implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private testRefService = inject(TestRef);
   private staffService = inject(ManageStaffServices);
-
 
   isLoading = true;
 
@@ -102,7 +101,8 @@ export class AdminDashboard implements OnInit {
               show: true,
               showAlways: true,
               label: 'overall',
-              formatter: (w: any) => w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0).toString(),
+              formatter: (w: any) =>
+                w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0).toString(),
             },
           },
         },
@@ -136,14 +136,18 @@ export class AdminDashboard implements OnInit {
         this.totalStaff = staff?.results ?? staff?.data?.length ?? 0;
 
         const reportsData: any[] = reports?.data || [];
-        this.completedReports = reportsData.filter((r) =>
-          r.reportStatus?.toLowerCase() === 'sent' || r.reportStatus?.toLowerCase() === 'completed'
+        this.completedReports = reportsData.filter(
+          (r) =>
+            r.reportStatus?.toLowerCase() === 'sent' ||
+            r.reportStatus?.toLowerCase() === 'completed',
         ).length;
-        this.readyReports = reportsData.filter((r) =>
-          r.reportStatus?.toLowerCase() === 'ready'
+        this.readyReports = reportsData.filter(
+          (r) => r.reportStatus?.toLowerCase() === 'ready',
         ).length;
-        this.inProgressReports = reportsData.filter((r) =>
-          r.reportStatus?.toLowerCase() === 'in-progress' || r.reportStatus?.toLowerCase() === 'pending'
+        this.inProgressReports = reportsData.filter(
+          (r) =>
+            r.reportStatus?.toLowerCase() === 'in-progress' ||
+            r.reportStatus?.toLowerCase() === 'pending',
         ).length;
 
         this.chartOptions = {

@@ -51,7 +51,6 @@ export class AccountSettings implements OnInit {
   ngOnInit(): void {
     this.detectUserRole();
     this.initForms();
-    this.loadUserData();
     if (this.userRole === 'staff') {
       this.fetchStaffProfileData();
     }
@@ -87,22 +86,6 @@ export class AccountSettings implements OnInit {
     return null;
   }
 
-  loadUserData(): void {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        const parsed = JSON.parse(storedUser);
-        const nameParts = (parsed.name || 'User Name').split(' ');
-        this.currentUser = {
-          firstName: nameParts[0] || '',
-          lastName: nameParts.slice(1).join(' ') || '',
-          email: parsed.email || '',
-          phone: parsed.phone || '',
-        };
-        this.cdr.detectChanges();
-      } catch (e) {}
-    }
-  }
   fetchStaffProfileData(): void {
     this.isLoadingStaffData = true;
     this.cdr.detectChanges();
@@ -119,6 +102,13 @@ export class AccountSettings implements OnInit {
             nationalId: data.nationalId || 'N/A',
           };
         }
+        const nameParts = (data.accountId.name || 'User Name').split(' ');
+        this.currentUser = {
+          firstName: nameParts[0] || '',
+          lastName: nameParts.slice(1).join(' ') || '',
+          email: data.accountId.email || '',
+          phone: data.accountId.phone || '',
+        };
         this.isLoadingStaffData = false;
         this.cdr.detectChanges();
       },

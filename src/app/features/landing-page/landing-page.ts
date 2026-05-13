@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-landing-page',
-  imports: [CommonModule,RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.css',
 })
@@ -76,7 +76,6 @@ export class LandingPage {
       'Schedule your home visit or lab appointment easily through our secure digital booking system. Fast, precise, and at your convenience.',
     buttonText: 'Book Your Appointment Now',
   };
-
 
   services = [
     {
