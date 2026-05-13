@@ -16,7 +16,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ChangeDetectorRef } from '@angular/core'; // ضيف ده فوق
 import { MatIconModule } from '@angular/material/icon';
-import {ManagePatients} from '../../../core/services/manage-patients/manage-patients'; // ضيف خدمة المرضى
+import ManagePatientsServices from '../../../core/services/manage-patients/manage-patients'; // ضيف خدمة المرضى
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-patient-modal',
@@ -30,6 +32,8 @@ import {ManagePatients} from '../../../core/services/manage-patients/manage-pati
     MatSelectModule,
     MatDialogContent,
     MatIconModule,
+    MatSnackBarModule,
+
   ],
   templateUrl: './patient-modal.html',
 })
@@ -46,6 +50,8 @@ export class PatientModal {
     private dialogRef: MatDialogRef<PatientModal>,
     private patientService: ManagePatients, // الخدمة الخاصة بالمرضى
     private cdr: ChangeDetectorRef,
+        private snackBar: MatSnackBar,
+
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.accountForm = this.fb.group({
@@ -94,26 +100,47 @@ private patchValues(patient: any) {
     this.dialogRef.close();
   }
 
-  nextStep() {
-    if (this.accountForm.invalid) return;
-    this.loading = true;
-    // إنشاء حساب بدور patient
-    this.patientService
-      .RegisterPatientAccount({ ...this.accountForm.value, role: 'patient' })
-      .subscribe({
-        next: (res: any) => {
-          this.accountId = res.data?.id || res.data?._id;
-          this.step = 2;
+nextStep() {
+  if (this.accountForm.invalid) return;
+
+  this.loading = true;
+
+  this.patientService
+    .RegisterPatientAccount({
+      ...this.accountForm.value,
+      role: 'patient'
+    })
+    .subscribe({
+      next: (res: any) => {
+        console.log('Register response:', res);
+
+        this.accountId =
+          res.data?.id ||
+          res.data?._id ||
+          res.id ||
+          res._id;
+
+        if (!this.accountId) {
           this.loading = false;
-          this.dialogRef.disableClose = true;
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          this.loading = false;
-          alert(err.error?.message);
-        },
-      });
-  }
+          this.showMessage('Failed to retrieve account ID', true);
+          return;
+        }
+
+        this.step = 2;
+        this.loading = false;
+        this.dialogRef.disableClose = true;
+        this.showMessage('Account created successfully');
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.loading = false;
+        this.showMessage(
+          err.error?.message || 'Failed to create account',
+          true
+        );
+      },
+    });
+}
 
   cancelRegistration() {
     if (this.isEditMode) {
@@ -142,11 +169,8 @@ private patchValues(patient: any) {
   }
 
 submit() {
-  console.log('submit fired');
-
   if (this.medicalForm.invalid) {
-    console.log(this.medicalForm.errors);
-    console.log(this.medicalForm.value);
+    this.showMessage('Please complete all required fields', true);
     return;
   }
 
@@ -155,18 +179,32 @@ submit() {
   const medicalData = {
     ...rawValues,
     chronicDiseases: rawValues.chronicDiseases
-      ? rawValues.chronicDiseases.split(',').map((s: any) => s.trim())
+      ? rawValues.chronicDiseases.split(',').map((s: string) => s.trim())
       : [],
+
     medications: rawValues.medications
-      ? rawValues.medications.split(',').map((s: any) => s.trim())
+      ? rawValues.medications.split(',').map((s: string) => s.trim())
       : [],
+
     previousSurgeries: rawValues.previousSurgeries
-      ? rawValues.previousSurgeries.split(',').map((s: any) => s.trim())
+      ? rawValues.previousSurgeries.split(',').map((s: string) => s.trim())
       : [],
   };
 
-  console.log(medicalData);
-
-  this.dialogRef.close({ medicalData });
+  if (this.isEditMode) {
+    this.dialogRef.close({ medicalData });
+  } else {
+    this.dialogRef.close({
+      accountId: this.accountId,
+      medicalData
+    });
+  }
 }
+
+  showMessage(message: string, isError = false) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      panelClass: isError ? ['error-snackbar'] : ['success-snackbar'],
+    });
+  }
 }
