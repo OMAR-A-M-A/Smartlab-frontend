@@ -12,7 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 import { MatIconModule, MatIcon } from '@angular/material/icon';
-import ManagePatientsServices from '../../../core/services/manage-patients/manage-patients';
+import {ManagePatients as ManPatient} from '../../../core/services/manage-patients/manage-patients';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -56,7 +56,7 @@ export class ManagePatients implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
-    private PatientService: ManagePatientsServices,
+    private PatientService: ManPatient,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
 

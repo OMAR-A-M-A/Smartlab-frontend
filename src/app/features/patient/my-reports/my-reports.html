@@ -1,0 +1,228 @@
+<div class="reports-page">
+
+    @if (isLoading) {
+  <div class="text-center py-5 text-muted d-flex align-items-center justify-content-center"
+    style="min-height: 400px;margin: auto;">
+    <i class="fa-solid fa-spinner fa-spin fa-2x mb-2 text-primary"></i>
+    <span class="small">Loading reports...</span>
+  </div>
+  } @else {
+
+  <div class="reports-list mt-3 mt-md-0">
+
+
+    <div *ngIf="error" class="error-msg">
+      {{ error }}
+    </div>
+
+    <div
+      *ngFor="let report of reports"
+      class="report-card"
+      [class.active]="selectedReport?._id === report._id"
+      (click)="selectReport(report)"
+    >
+
+      <div class="report-card__icon">
+        <i class="fa-regular fa-clipboard"></i>
+      </div>
+
+      <div class="report-card__info">
+
+        <div class="report-card__top">
+
+          <span class="report-card__name">
+            Complete Blood Count
+          </span>
+
+          <span
+            class="badge"
+            [ngClass]="
+              report.reportStatus === 'Completed'
+                ? 'badge--completed'
+                : 'badge--pending'
+            "
+          >
+
+            {{ report.reportStatus || 'Pending' }}
+
+          </span>
+
+        </div>
+
+        <div class="report-card__date">
+
+          {{ formatDate(report.requestDate) }}
+
+        </div>
+
+        <!-- <div class="report-card__id">
+
+          {{ report._id }}
+
+        </div> -->
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+  <div class="report-detail" >
+
+    <div *ngIf="selectedReport as report">
+
+      <!-- HEADER -->
+      <div class="detail-header">
+
+        <div>
+
+          <h2>Complete Blood Count</h2>
+
+          <p>
+            Report ID:
+            {{ report._id }}
+          </p>
+
+          <p>
+            Date:
+            {{ formatDate(report.requestDate) }}
+          </p>
+
+        </div>
+
+        <div class="detail-header__actions">
+
+          <button
+            class="btn-icon"
+            (click)="downloadReport()"
+          >
+            <i class="fa-solid fa-download"></i>
+          </button>
+
+          <button class="btn-icon btn-light">
+            <i class="fa-regular fa-eye"></i>
+          </button>
+
+        </div>
+
+      </div>
+
+      <div #reportContent>
+
+        <div
+        class="overall-status"
+        [ngClass]="getOverallStatusClass()"
+
+      >
+
+        <i
+          class="fa-solid"
+          [ngClass]="{
+            'fa-circle-check': getOverallStatus() === 'Normal',
+            'fa-triangle-exclamation': getOverallStatus() !== 'Normal'
+          }"
+        ></i>
+
+        Overall Status:
+        {{ getOverallStatus() }}
+
+      </div>
+
+      <h4 class="section-title">
+        Test Results
+      </h4>
+
+      <div class="tests-list">
+
+        <div
+          *ngFor="let test of report.tests"
+          class="test-card"
+        >
+
+          <div class="test-card__top">
+
+            <span class="test-card__name">
+
+              {{ test.testName }}
+
+            </span>
+
+            <span
+              class="badge"
+              [ngClass]="getStatusClass(test.status)"
+            >
+
+              <i
+                class="fa-solid me-1"
+                [ngClass]="{
+                  'fa-circle-check': test.status === 'N',
+                  'fa-arrow-up': test.status === 'H',
+                  'fa-arrow-down': test.status === 'L'
+                }"
+              ></i>
+
+              {{ getStatusLabel(test.status) }}
+
+            </span>
+
+          </div>
+
+          <div class="test-card__values">
+
+            <div>
+
+              <small>Your Result</small>
+
+              <strong>
+
+                {{ test.result }}
+
+                <sup>
+                  {{ test.unit }}
+                </sup>
+
+              </strong>
+
+            </div>
+
+            <div>
+
+              <small>Normal Result</small>
+
+              <strong>
+
+                {{ test.referenceText }}
+
+              </strong>
+
+            </div>
+
+          </div>
+
+          <div class="progress-bar">
+
+            <div
+              class="progress-bar__fill"
+              [style.width.%]="getProgressPercent(test)"
+              [style.background]="getProgressColor(test.status)"
+            ></div>
+
+          </div>
+
+          <div class="patient-advice">
+
+            {{ test.patientAdvice }}
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+    </div>
+
+  </div>
+  }
+</div>

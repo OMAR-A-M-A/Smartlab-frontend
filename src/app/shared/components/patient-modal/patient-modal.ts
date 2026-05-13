@@ -48,7 +48,7 @@ export class PatientModal {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<PatientModal>,
-    private patientService: ManagePatientsServices, // الخدمة الخاصة بالمرضى
+    private patientService: ManagePatients, // الخدمة الخاصة بالمرضى
     private cdr: ChangeDetectorRef,
         private snackBar: MatSnackBar,
 
