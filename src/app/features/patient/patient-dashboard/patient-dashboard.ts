@@ -37,10 +37,10 @@ export class PatientDashboard implements OnInit {
     return this.appointments.length;
   }
   get pendingAppointments(): number {
-    return this.appointments.filter((a) => a.status === 'Pending').length;
+    return this.appointments.filter((a) => a.status === 'completed').length;
   }
   get confirmedAppointments(): number {
-    return this.appointments.filter((a) => a.status === 'Confirmed').length;
+    return this.appointments.filter((a) => a.status === 'cancelled').length;
   }
   get totalReports(): number {
     return this.reports.length;

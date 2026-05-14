@@ -31,9 +31,12 @@ import { SharedPopup } from '../../../shared/components/shared-popup/shared-popu
     MatIconModule,
     MatSnackBarModule,
   ],
+
   templateUrl: './manage-patients.html',
+
   styleUrl: './manage-patients.css',
 })
+
 export class ManagePatients implements OnInit {
   displayedColumns: string[] = [
     'name',
@@ -48,9 +51,12 @@ export class ManagePatients implements OnInit {
     'actions',
   ];
 
+  isLoading = false;
+
   dataSource = new MatTableDataSource<any>([]);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
@@ -91,65 +97,112 @@ export class ManagePatients implements OnInit {
   }
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    const filterValue = (
+      event.target as HTMLInputElement
+    ).value;
+
+    this.dataSource.filter =
+      filterValue.trim().toLowerCase();
 
     if (this.dataSource.paginator) {
+
       this.dataSource.paginator.firstPage();
+
     }
+
   }
 
 
   openAddModal() {
-    const dialogRef = this.dialog.open(PatientModal, { width: '600px' });
+
+    const dialogRef = this.dialog.open(
+      PatientModal,
+      {
+        width: '600px'
+      }
+    );
 
     dialogRef.afterClosed().subscribe((result) => {
+
       if (!result) return;
 
-      const payload = {
-        accountId: result.accountId,
-        ...result.medicalData,
-      };
+      this.PatientService.createPatient({
 
-      this.PatientService.createPatient(payload).subscribe({
-        next: (res) => {
+        accountId: result.accountId,
+
+        ...result.medicalData,
+
+      }).subscribe({
+
+        next: () => {
+
           this.loadPatients();
 
-          const patientName = res?.data?.accountId?.name || result.accountId?.name || 'New Patient';
-          const generatedId = res?.data?.accountId?.patientId || res?.data?._id || '#AD-45532';
+          this.showMessage(
+            'Patient added successfully'
+          );
 
-          this.openPatientCreatedPopup(patientName, generatedId);
         },
+
         error: (err) => {
-          this.showMessage(err.error?.message || 'Failed to add patient', true);
+
+          this.showMessage(
+            err.error?.message || 'Failed to add patient',
+            true
+          );
+
         },
+
       });
+
     });
+
   }
 
 
   openEditModal(patient: any) {
-    const dialogRef = this.dialog.open(PatientModal, {
-      width: '600px',
-      data: { patient },
-    });
+
+    const dialogRef = this.dialog.open(
+      PatientModal,
+      {
+        width: '600px',
+        data: { patient },
+      }
+    );
 
     dialogRef.afterClosed().subscribe((result) => {
+
       if (!result || !result.medicalData) return;
 
-      this.PatientService.updatePatient(patient._id, result.medicalData).subscribe({
+      this.PatientService.updatePatient(
+        patient._id,
+        result.medicalData
+      ).subscribe({
+
         next: () => {
+
           this.loadPatients();
 
-          const patientName = patient.accountId?.name || 'Patient';
+          this.showMessage(
+            'Patient updated successfully'
+          );
 
-          this.openResultsUpdatedPopup(patientName);
         },
+
         error: (err) => {
-          this.showMessage(err.error?.message || 'Failed to update patient', true);
+
+          this.showMessage(
+            err.error?.message || 'Failed to update patient',
+            true
+          );
+
         },
+
       });
+
     });
+
   }
 
 
@@ -237,5 +290,40 @@ export class ManagePatients implements OnInit {
       verticalPosition: 'bottom',
       panelClass: isError ? ['error-snackbar'] : ['success-snackbar'],
     });
+
   }
+
+  goToCreateReport(patient: any) {
+
+    this.router.navigate(
+      ['/staff/reports'],
+      {
+        queryParams: {
+          patientId: patient._id
+        }
+      }
+    );
+
+  }
+
+  showMessage(
+    message: string,
+    isError = false
+  ) {
+
+    this.snackBar.open(
+      message,
+      'Close',
+      {
+        duration: 3000,
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        panelClass: isError
+          ? ['error-snackbar']
+          : ['success-snackbar'],
+      }
+    );
+
+  }
+
 }
