@@ -1,96 +1,262 @@
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold text-primary">Manage Patients</h2>
+<div class="patients-page">
 
-    <button mat-raised-button color="primary" (click)="openAddModal()">Add Patient</button>
+  <!-- Header -->
+  <div class="page-header">
+
+    <div>
+      <h3 class="page-title">
+        Manage Patients
+      </h3>
+
+      <p class="page-subtitle">
+        View and manage all patient records.
+      </p>
+    </div>
+
+    <button
+      class="btn-create"
+      (click)="openAddModal()">
+
+      <i class="fa fa-plus"></i>
+
+      Add Patient
+
+    </button>
+
   </div>
 
-  <mat-form-field appearance="outline" class="w-100 mb-3">
-    <mat-label>Search Patients</mat-label>
+  <!-- Search -->
+  <div class="search-card">
 
-    <mat-icon matPrefix>search</mat-icon>
+    <div class="search-input-wrap">
 
-    <input matInput placeholder="Name / Email / Patient ID" (keyup)="applyFilter($event)" />
+      <i class="fa-solid fa-magnifying-glass"></i>
 
-    <mat-hint>Search using patient name, email, or patient ID</mat-hint>
-  </mat-form-field>
+      <input
+        type="text"
+        placeholder="Search by name, email, or patient ID..."
+        (keyup)="applyFilter($event)"
+      />
 
-  <div class="mat-elevation-z8 rounded overflow-hidden">
-    <table mat-table [dataSource]="dataSource" matSort class="w-100">
-      <!-- Name -->
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-        <td mat-cell *matCellDef="let row">{{ row.accountId?.name }}</td>
-      </ng-container>
+    </div>
 
-      <!-- Email -->
-      <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef>Email</th>
-        <td mat-cell *matCellDef="let row">{{ row.accountId?.email }}</td>
-      </ng-container>
-
-      <!-- Age -->
-      <ng-container matColumnDef="age">
-        <th mat-header-cell *matHeaderCellDef>Age</th>
-        <td mat-cell *matCellDef="let row">{{ row.age }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="weight">
-        <th mat-header-cell *matHeaderCellDef>Weight</th>
-        <td mat-cell *matCellDef="let row">{{ row.weight }}</td>
-      </ng-container>
-      <ng-container matColumnDef="height">
-        <th mat-header-cell *matHeaderCellDef>Height</th>
-        <td mat-cell *matCellDef="let row">{{ row.height }}</td>
-      </ng-container>
-
-      <!-- Chronic Diseases -->
-      <ng-container matColumnDef="chronicDiseases">
-        <th mat-header-cell *matHeaderCellDef>Chronic Diseases</th>
-        <td mat-cell *matCellDef="let row">{{ row.chronicDiseases?.join(', ') || 'None' }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="previousSurgeries">
-        <th mat-header-cell *matHeaderCellDef>Previous Surgeries</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.previousSurgeries?.join(', ') || 'None' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="medications">
-        <th mat-header-cell *matHeaderCellDef>Medications</th>
-        <td mat-cell *matCellDef="let row">{{ row.medications?.join(', ') || 'None' }}</td>
-      </ng-container>
-      <ng-container matColumnDef="isSmoker">
-        <th mat-header-cell *matHeaderCellDef>Is Smoker</th>
-        <td mat-cell *matCellDef="let row">
-          {{ row.isSmoker === true || row.isSmoker === 'true' ? 'Yes' : 'No' }}
-        </td>
-      </ng-container>
-
-      <!-- Actions -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let row">
-          <div class="d-flex gap-2">
-            <button mat-icon-button class="text-success" title="Add Report">
-              <mat-icon>assignment_add</mat-icon>
-            </button>
-            <button mat-icon-button class="btn-edit" (click)="openEditModal(row)">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button class="btn-delete" (click)="deletePatient(row._id)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </td>
-      </ng-container>
-
-      <!-- الأسطر التالية هي التي كانت تنقصك وتسببت في الخطأ -->
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
-
-    <mat-paginator [pageSize]="10"></mat-paginator>
   </div>
+
+  <!-- Table -->
+  <div class="table-card">
+
+    @if (isLoading) {
+
+      <div
+        class="text-center py-5 text-muted d-flex flex-column align-items-center justify-content-center"
+        style="min-height: 400px;">
+
+        <i class="fa-solid fa-spinner fa-spin fa-2x mb-2 text-primary"></i>
+
+        <span class="small">
+          Loading...
+        </span>
+
+      </div>
+
+    }
+
+    @else if (dataSource.filteredData.length === 0) {
+
+      <!-- Empty State -->
+      <div class="empty-state">
+
+        <i class="fa-regular fa-folder-open"></i>
+
+        <p>
+          No patients found.
+        </p>
+
+      </div>
+
+    }
+
+    @else {
+
+      <table class="patients-table">
+
+        <thead>
+
+          <tr>
+
+            <th>Patient</th>
+
+            <th>Email</th>
+
+            <th>Age</th>
+
+            <th>Weight</th>
+
+            <th>Height</th>
+
+            <th>Diseases</th>
+
+            <th>Smoker</th>
+
+            <th>Actions</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let row of dataSource.filteredData">
+
+            <!-- PATIENT -->
+            <td>
+
+              <div class="patient-cell">
+
+                <div>
+
+                  <div class="patient-name">
+
+                    {{ row.accountId?.name }}
+
+                  </div>
+
+                  <div class="patient-id">
+
+                    #A-{{
+                      row._id?.slice(-6)
+                    }}
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </td>
+
+            <!-- EMAIL -->
+            <td class="col-email">
+
+              {{ row.accountId?.email }}
+
+            </td>
+
+            <!-- AGE -->
+            <td>
+
+              {{ row.age }}
+
+            </td>
+
+            <!-- WEIGHT -->
+            <td>
+
+              {{ row.weight }}
+
+            </td>
+
+            <!-- HEIGHT -->
+            <td>
+
+              {{ row.height }}
+
+            </td>
+
+            <!-- DISEASES -->
+            <td>
+
+              <div class="tests-wrap">
+
+                <span
+                  class="test-tag"
+                  *ngFor="let disease of row.chronicDiseases">
+
+                  {{ disease }}
+
+                </span>
+
+                <span
+                  *ngIf="!row.chronicDiseases?.length"
+                  class="text-muted">
+
+                  None
+
+                </span>
+
+              </div>
+
+            </td>
+
+            <!-- SMOKER -->
+            <td>
+
+              <span
+                class="status-badge"
+                [ngClass]="{
+                  'status-pending': row.isSmoker,
+                  'status-completed': !row.isSmoker
+                }"
+                style="white-space: nowrap;"
+                >
+
+                {{
+                  row.isSmoker === true || row.isSmoker === 'true'
+                    ? 'Smoker'
+                    : 'Non Smoker'
+                }}
+
+              </span>
+
+            </td>
+
+            <!-- ACTIONS -->
+            <td>
+
+              <div class="actions-wrap">
+
+                <!-- Add Report -->
+                <button
+                  class="btn-action btn-report"
+                  title="Add Report"
+                  (click)="goToCreateReport(row)">
+
+                  <i class="fa-solid fa-file-circle-plus"></i>
+
+                </button>
+
+                <!-- Edit -->
+                <button
+                  class="btn-action btn-edit"
+                  title="Edit"
+                  (click)="openEditModal(row)">
+
+                  <i class="fa-regular fa-pen-to-square"></i>
+
+                </button>
+
+                <!-- Delete -->
+                <button
+                  class="btn-action btn-delete"
+                  title="Delete"
+                  (click)="deletePatient(row._id)">
+
+                  <i class="fa-regular fa-trash-can"></i>
+
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    }
+
+  </div>
+
 </div>

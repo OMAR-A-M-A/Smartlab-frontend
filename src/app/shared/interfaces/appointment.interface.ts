@@ -30,7 +30,7 @@ export interface MyAppointment {
   time: string;
   appointmentType: 'Lab-Visit' | 'Home-Visit';
   address?: string;
-  status: 'Pending' | 'Confirmed' | 'Cancelled' | 'Completed';
+  status: 'completed' | 'cancelled';
   createdAt: string;
   updatedAt: string;
 }

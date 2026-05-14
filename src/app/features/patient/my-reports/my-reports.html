@@ -1,14 +1,30 @@
 <div class="reports-page">
 
     @if (isLoading) {
-  <div class="text-center py-5 text-muted d-flex align-items-center justify-content-center"
-    style="min-height: 400px;margin: auto;">
-    <i class="fa-solid fa-spinner fa-spin fa-2x mb-2 text-primary"></i>
-    <span class="small">Loading reports...</span>
-  </div>
-  } @else {
+    <div class="text-center py-5 text-muted d-flex align-items-center justify-content-center"
+      style="min-height: 400px;margin: auto;">
+      <i class="fa-solid fa-spinner fa-spin fa-2x mb-2 text-primary"></i>
+      <span class="small">Loading reports...</span>
+    </div>
+  }@else if (reports.length === 0) {
 
-  <div class="reports-list mt-3 mt-md-0">
+      <div class="empty-state">
+
+        <i class="fa-regular fa-folder-open"></i>
+
+        <h3>
+          No Reports Found
+        </h3>
+
+        <p>
+          No laboratory reports have been created yet.
+        </p>
+
+      </div>
+
+    }@else {
+
+    <div class="reports-list mt-3 mt-md-0">
 
 
     <div *ngIf="error" class="error-msg">
@@ -55,12 +71,6 @@
 
         </div>
 
-        <!-- <div class="report-card__id">
-
-          {{ report._id }}
-
-        </div> -->
-
       </div>
 
     </div>
@@ -98,10 +108,6 @@
             (click)="downloadReport()"
           >
             <i class="fa-solid fa-download"></i>
-          </button>
-
-          <button class="btn-icon btn-light">
-            <i class="fa-regular fa-eye"></i>
           </button>
 
         </div>

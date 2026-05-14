@@ -72,10 +72,8 @@
               </div>
               <span class="appt-badge"
                 [ngClass]="{
-                  'badge-pending':   appt.status === 'Pending',
-                  'badge-confirmed': appt.status === 'Confirmed',
-                  'badge-cancelled': appt.status === 'Cancelled',
-                  'badge-completed': appt.status === 'Completed'
+                  'badge-cancelled': appt.status === 'cancelled',
+                  'badge-completed': appt.status === 'completed'
                 }">
                 {{ appt.status }}
               </span>

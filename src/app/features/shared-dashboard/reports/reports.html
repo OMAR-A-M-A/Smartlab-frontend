@@ -1,1 +1,244 @@
-<p>reports works!</p>
+<div class="reports-page" dir="ltr">
+
+  <!-- Header -->
+  <div class="page-header">
+
+    <div>
+      <h3 class="page-title">
+        Laboratory Reports
+      </h3>
+
+      <p class="page-subtitle">
+        View and manage all diagnostic records.
+      </p>
+    </div>
+
+    <button
+      class="btn-create"
+      (click)="openAddModal()">
+
+      <i class="fa fa-plus"></i>
+
+      Create Report
+
+    </button>
+
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+
+    <div
+      class="stat-card"
+      *ngFor="let card of statsCards">
+
+      <div
+        class="stat-icon"
+        [style.backgroundColor]="card.bg"
+        [style.color]="card.color">
+
+        <i
+          class="fa-solid"
+          [class]="card.icon">
+        </i>
+
+      </div>
+
+      <div class="stat-info">
+
+        <p class="stat-label">
+          {{ card.title }}
+        </p>
+
+        <h2 class="stat-value">
+          {{ card.count }}
+        </h2>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Table -->
+  <div class="table-card">
+
+    @if (isLoading) {
+
+      <div class="text-center py-5 text-muted d-flex flex-column align-items-center justify-content-center"
+        style="min-height: 400px;">
+        <i class="fa-solid fa-spinner fa-spin fa-2x mb-2 text-primary"></i>
+        <span class="small">Loading...</span>
+      </div>
+    }
+
+    @else if (reports.length === 0) {
+
+      <div class="empty-state">
+
+        <i class="fa-regular fa-folder-open"></i>
+
+        <p>
+          No reports found.
+        </p>
+
+      </div>
+    }
+
+    @else {
+
+      <table class="reports-table">
+
+        <thead>
+
+          <tr>
+
+            <th>Patient</th>
+
+            <th>Referred By</th>
+
+            <th>Tests</th>
+
+            <th>Date</th>
+
+            <th>Status</th>
+
+            <th>Actions</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let report of reports">
+
+            <!-- PATIENT -->
+            <td>
+
+              <div class="patient-cell">
+
+                <div>
+
+                  <div class="patient-name">
+
+                    {{
+                      report.patient?.accountId?.name
+                      || 'Unknown Patient'
+                    }}
+
+                  </div>
+
+                  <div class="patient-id">
+
+                    #A-{{
+                      report.patient?._id?.slice(-6)
+                      || report._id?.slice(-6)
+                    }}
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </td>
+
+            <!-- REFERRED -->
+            <td class="col-referred">
+
+              {{
+                report.referredBy || '—'
+              }}
+
+            </td>
+
+            <!-- TESTS -->
+            <td>
+
+              <div class="tests-wrap">
+
+                <span
+                  *ngFor="let t of report.tests"
+                  class="test-tag">
+
+                  {{ t.testName }}
+
+                </span>
+
+              </div>
+
+            </td>
+
+            <!-- DATE -->
+            <td class="col-date">
+
+              {{
+                (report.requestDate || report.createdAt)
+                | date: 'dd/MM/yyyy'
+              }}
+
+            </td>
+
+            <!-- STATUS -->
+            <td>
+
+              <span
+                class="status-badge"
+
+                [ngClass]="{
+
+                  'status-completed':
+                    report.reportStatus?.toLowerCase() === 'completed',
+
+                  'status-pending':
+                    !report.reportStatus ||
+                    report.reportStatus?.toLowerCase() === 'pending'
+
+                }">
+
+                {{
+                  report.reportStatus || 'Pending'
+                }}
+
+              </span>
+
+            </td>
+
+            <!-- ACTIONS -->
+            <td>
+
+              <div class="actions-wrap">
+
+                <button
+                  class="btn-action btn-edit"
+                  (click)="openEditModal(report)"
+                  title="Edit">
+
+                  <i class="fa-regular fa-pen-to-square"></i>
+
+                </button>
+
+                <button
+                  class="btn-action btn-delete"
+                  (click)="deleteReport(report._id)"
+                  title="Delete">
+
+                  <i class="fa-regular fa-trash-can"></i>
+
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+    }
+
+  </div>
+
+</div>
