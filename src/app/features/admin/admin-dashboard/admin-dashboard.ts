@@ -1,11 +1,15 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { MatDialog } from '@angular/material/dialog'; // 🌟 1. استدعاء الماتيريال دايالوج
-
+import { MatDialog } from '@angular/material/dialog';
 import { Reports } from '../../../core/services/reports/reports';
 import { ManagePatients as PatientService } from '../../../core/services/manage-patients/manage-patients';
 import { Booking } from '../../../core/services/booking/booking';
@@ -21,75 +25,39 @@ import { SharedPopup } from '../../../shared/components/shared-popup/shared-popu
   styleUrl: './admin-dashboard.css',
 })
 export class AdminDashboard implements OnInit {
-  private reportsService = inject(Reports);
-  private patientService = inject(PatientService);
-  private bookingService = inject(Booking);
-  private cdr = inject(ChangeDetectorRef);
-  private testRefService = inject(TestRef);
-  private staffService = inject(ManageStaffServices);
-  private dialog = inject(MatDialog); // 🌟 حقن الدايالوج
-  private router = inject(Router);
+  private reportsService  = inject(Reports);
+  private patientService  = inject(PatientService);
+  private bookingService  = inject(Booking);
+  private cdr             = inject(ChangeDetectorRef);
+  private testRefService  = inject(TestRef);
+  private staffService    = inject(ManageStaffServices);
+  private dialog          = inject(MatDialog);
+  private router          = inject(Router);
 
   isLoading = true;
 
-  totalReports = 0;
-  dangerousReports = 0;
-  totalPatients = 0;
+  totalReports      = 0;
+  dangerousReports  = 0;
+  totalPatients     = 0;
   totalAppointments = 0;
-  totalReferences = 0;
-  totalStaff = 0;
+  totalReferences   = 0;
+  totalStaff        = 0;
 
-  completedReports = 0;
-  readyReports = 0;
+  completedReports  = 0;
+  readyReports      = 0;
   inProgressReports = 0;
 
-  // 🌟 مصفوفة لتخزين أحدث التقارير وعرضها في الجدول
   recentReportsList: any[] = [];
+  recentPatients: any[]    = [];
 
   get statsCards() {
     return [
-      {
-        title: 'Total Reports',
-        value: this.totalReports,
-        icon: 'fa-regular fa-file-lines',
-        bg: '#eff6ff',
-        color: '#3b82f6',
-      },
-      {
-        title: 'Dangerous Reports',
-        value: this.dangerousReports,
-        icon: 'fa-solid fa-triangle-exclamation',
-        bg: '#fee2e2',
-        color: '#ef4444',
-      },
-      {
-        title: 'Total Patients',
-        value: this.totalPatients,
-        icon: 'fa-solid fa-user-injured',
-        bg: '#f3e8ff',
-        color: '#a855f7',
-      },
-      {
-        title: 'Daily Appointments',
-        value: this.totalAppointments,
-        icon: 'fa-regular fa-calendar',
-        bg: '#fef9c3',
-        color: '#eab308',
-      },
-      {
-        title: 'Test References',
-        value: this.totalReferences,
-        icon: 'fa-solid fa-microscope',
-        bg: '#dcfce7',
-        color: '#22c55e',
-      },
-      {
-        title: 'Staff Members',
-        value: this.totalStaff,
-        icon: 'fa-solid fa-user-doctor',
-        bg: '#fff7ed',
-        color: '#f97316',
-      },
+      { title: 'Total Reports',      value: this.totalReports,      icon: 'fa-regular fa-file-lines',         bg: '#eff6ff', color: '#3b82f6' },
+      { title: 'Dangerous Reports',  value: this.dangerousReports,  icon: 'fa-solid fa-triangle-exclamation', bg: '#fee2e2', color: '#ef4444' },
+      { title: 'Total Patients',     value: this.totalPatients,     icon: 'fa-solid fa-user-injured',         bg: '#f3e8ff', color: '#a855f7' },
+      { title: 'Daily Appointments', value: this.totalAppointments, icon: 'fa-regular fa-calendar',           bg: '#fef9c3', color: '#eab308' },
+      { title: 'Test References',    value: this.totalReferences,   icon: 'fa-solid fa-microscope',           bg: '#dcfce7', color: '#22c55e' },
+      { title: 'Staff Members',      value: this.totalStaff,        icon: 'fa-solid fa-user-doctor',          bg: '#fff7ed', color: '#f97316' },
     ];
   }
 
@@ -104,7 +72,7 @@ export class AdminDashboard implements OnInit {
           size: '65%',
           labels: {
             show: true,
-            name: { show: true, fontSize: '12px', color: '#64748b', offsetY: -5 },
+            name:  { show: true, fontSize: '12px', color: '#64748b', offsetY: -5 },
             value: { show: true, fontSize: '22px', fontWeight: 600, color: '#1e293b', offsetY: 5 },
             total: {
               show: true,
@@ -128,43 +96,33 @@ export class AdminDashboard implements OnInit {
     const today = new Date().toISOString().split('T')[0];
 
     forkJoin({
-      reports: this.reportsService.getAllReports().pipe(catchError(() => of(null))),
-      dangerous: this.reportsService.getDangerousReports().pipe(catchError(() => of(null))),
-      patients: this.patientService.getAllPatients().pipe(catchError(() => of(null))),
+      reports:      this.reportsService.getAllReports().pipe(catchError(() => of(null))),
+      dangerous:    this.reportsService.getDangerousReports().pipe(catchError(() => of(null))),
+      patients:     this.patientService.getAllPatients().pipe(catchError(() => of(null))),
       appointments: this.bookingService.getDailySchedule(today).pipe(catchError(() => of(null))),
-      references: this.testRefService.getAllReferences().pipe(catchError(() => of(null))),
-      staff: this.staffService.getAllStaff().pipe(catchError(() => of(null))),
+      references:   this.testRefService.getAllReferences().pipe(catchError(() => of(null))),
+      staff:        this.staffService.getAllStaff().pipe(catchError(() => of(null))),
     }).subscribe({
       next: ({ reports, dangerous, patients, appointments, references, staff }) => {
-        this.totalReports = reports?.results ?? reports?.data?.length ?? 0;
-        this.dangerousReports = dangerous?.results ?? dangerous?.data?.length ?? 0;
-        this.totalPatients = patients?.results ?? patients?.data?.length ?? 0;
-        this.totalAppointments = appointments?.results ?? appointments?.data?.length ?? 0;
-        this.totalReferences = references?.results ?? references?.data?.length ?? 0;
-        this.totalStaff = staff?.results ?? staff?.data?.length ?? 0;
 
-        const reportsData: any[] = reports?.data || [];
+        this.totalReports      = reports?.results      ?? reports?.data?.length            ?? 0;
+        this.dangerousReports  = dangerous?.results    ?? dangerous?.data?.length          ?? 0;
+        this.totalPatients     = patients?.results     ?? patients?.data?.patients?.length ?? 0;
+        this.totalAppointments = appointments?.results ?? appointments?.data?.length       ?? 0;
+        this.totalReferences   = references?.results   ?? references?.data?.length         ?? 0;
+        this.totalStaff        = staff?.results        ?? staff?.data?.length              ?? 0;
 
-        // 🌟 سحب أول 6 تقارير لفرشهم في الجدول السفلي (نفضل إظهار الخطيرة لو متاحة)
+        const reportsData: any[]   = reports?.data   || [];
         const dangerousData: any[] = dangerous?.data || [];
-        this.recentReportsList = (dangerousData.length > 0 ? dangerousData : reportsData).slice(
-          0,
-          6,
-        );
 
-        this.completedReports = reportsData.filter(
-          (r) =>
-            r.reportStatus?.toLowerCase() === 'sent' ||
-            r.reportStatus?.toLowerCase() === 'completed',
-        ).length;
-        this.readyReports = reportsData.filter(
-          (r) => r.reportStatus?.toLowerCase() === 'ready',
-        ).length;
-        this.inProgressReports = reportsData.filter(
-          (r) =>
-            r.reportStatus?.toLowerCase() === 'in-progress' ||
-            r.reportStatus?.toLowerCase() === 'pending',
-        ).length;
+        // نعرض الـ dangerous لو موجودين، غير كده آخر 6 ريبورتس
+        this.recentReportsList = (dangerousData.length > 0 ? dangerousData : reportsData).slice(0, 6);
+        this.recentPatients    = (patients?.data?.patients || []).slice(0, 4);
+
+        // Chart
+        this.completedReports  = reportsData.filter((r) => r.reportStatus?.toLowerCase() === 'sent'        || r.reportStatus?.toLowerCase() === 'completed').length;
+        this.readyReports      = reportsData.filter((r) => r.reportStatus?.toLowerCase() === 'ready').length;
+        this.inProgressReports = reportsData.filter((r) => r.reportStatus?.toLowerCase() === 'in-progress' || r.reportStatus?.toLowerCase() === 'pending').length;
 
         this.chartOptions = {
           ...this.chartOptions,
@@ -181,11 +139,12 @@ export class AdminDashboard implements OnInit {
     });
   }
 
-  // =======================================================
-  // 🌟 دالة فتح البوب-أب التحذيري للأدمن (System Audit)
-  // =======================================================
   openAuditPopup(report: any): void {
-    const patientName = report.accountId?.name || report.patientName || 'Target Record';
+    const patientName =
+      report.patient?.accountId?.name ||
+      report.patientName ||
+      'Target Record';
+
     const status = report.reportStatus || 'Pending';
 
     const dialogRef = this.dialog.open(SharedPopup, {
@@ -194,20 +153,25 @@ export class AdminDashboard implements OnInit {
         type: 'warning',
         title: 'System Audit: Action Required',
         descriptionTextBeforeName: 'The lab report for ',
-        patientName: patientName, // يظهر مميز و Bold
+        patientName: patientName,
         descriptionTextAfterName: ` currently flagged as (${status}) requires administrative review or validation.`,
         showClose: true,
         actions: [
           { label: 'Full Audit', type: 'primary', value: 'audit' },
-          { label: 'Dismiss', type: 'outline', value: 'close' },
+          { label: 'Dismiss',    type: 'outline',  value: 'close' },
         ],
       },
     });
 
     dialogRef.afterClosed().subscribe((actionValue) => {
       if (actionValue === 'audit') {
-        // التوجيه لصفحة التقارير الخطيرة مع تمرير الـ ID لفتحه مباشرة
-        this.router.navigate(['/admin/dangerous-reports'], { queryParams: { target: report._id } });
+        // بنبعت patientId + reportId عشان صفحة الـ reports تفلتر وتفتح الـ edit modal
+        this.router.navigate(['/admin/reports'], {
+          queryParams: {
+            patientId: report.patient?._id || report.patient,
+            reportId:  report._id,
+          },
+        });
       }
     });
   }

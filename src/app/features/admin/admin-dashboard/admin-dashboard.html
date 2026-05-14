@@ -5,7 +5,6 @@
       <h1 class="dash-title">Dashboard Overview</h1>
       <p class="dash-subtitle">Streamline lab data entry, validate results, and keep patient records accurate.</p>
     </div>
-
     <div class="header-actions">
       <button routerLink="/admin/manage-staff" class="btn btn-outline">
         <i class="fa-solid fa-user-doctor ms-1"></i> Staff Accounts
@@ -16,6 +15,7 @@
     </div>
   </div>
 
+  <!-- Stats Grid -->
   <div class="stats-grid">
     <div class="stat-card" *ngFor="let stat of statsCards">
       <div class="stat-top">
@@ -26,25 +26,33 @@
       </div>
       <div class="stat-number">
         @if (isLoading) {
-        <span class="placeholder-glow"><span class="placeholder col-4"></span></span>
+          <span class="placeholder-glow"><span class="placeholder col-4"></span></span>
         } @else {
-        {{ stat.value }}
+          {{ stat.value }}
         }
       </div>
     </div>
   </div>
 
+  <!-- Chart + Table -->
   <div class="dashboard-main-grid">
 
+    <!-- Chart -->
     <div class="ui-card chart-card">
       <div class="ui-card-header">
         <h3 class="ui-card-title">Reports Overview</h3>
       </div>
       <div class="chart-flex">
         <div class="chart-wrapper">
-          <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [labels]="chartOptions.labels"
-            [colors]="chartOptions.colors" [plotOptions]="chartOptions.plotOptions"
-            [dataLabels]="chartOptions.dataLabels" [stroke]="chartOptions.stroke" [legend]="chartOptions.legend"
+          <apx-chart
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [labels]="chartOptions.labels"
+            [colors]="chartOptions.colors"
+            [plotOptions]="chartOptions.plotOptions"
+            [dataLabels]="chartOptions.dataLabels"
+            [stroke]="chartOptions.stroke"
+            [legend]="chartOptions.legend"
             [tooltip]="chartOptions.tooltip">
           </apx-chart>
         </div>
@@ -65,48 +73,65 @@
       </div>
     </div>
 
+    <!-- Recent Reports Table -->
     <div class="ui-card table-card">
       <div class="ui-card-header">
         <h3 class="ui-card-title">Recent System Reports</h3>
         <span class="badge-count" *ngIf="!isLoading">{{ recentReportsList.length }} Records</span>
       </div>
 
-      <div class="text-center py-4 text-muted" *ngIf="isLoading">
-        <i class="fa-solid fa-spinner fa-spin text-primary"></i> Fetching active reports...
-      </div>
-
-      <div class="table-responsive" *ngIf="!isLoading">
-        <table class="dash-table">
-          <thead>
-            <tr>
-              <th>Patient Name</th>
-              <th>Test Reference</th>
-              <th>Status</th>
-              <th class="text-end">Audit</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let report of recentReportsList">
-              <td class="fw-bold">{{ report.accountId?.name || report.patientName || 'Unnamed Record' }}</td>
-              <td class="text-secondary">{{ report.testRef?.name || report.testType || 'General Lab Test' }}</td>
-              <td>
-                <span class="status-badge" [ngClass]="report.reportStatus?.toLowerCase() || 'pending'">
-                  {{ report.reportStatus || 'Pending' }}
-                </span>
-              </td>
-              <td class="text-end">
-                <button class="audit-btn" (click)="openAuditPopup(report)" title="Audit Record">
-                  Review
-                </button>
-              </td>
-            </tr>
-
-            <tr *ngIf="recentReportsList.length === 0">
-              <td colspan="4" class="empty-table-state">No reports recorded in the system yet.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      @if (isLoading) {
+        <div class="text-center py-5 text-muted d-flex flex-column align-items-center justify-content-center"
+          style="min-height: 280px;">
+          <i class="fa-solid fa-spinner fa-spin fa-2x mb-2 text-primary"></i>
+          <span class="small">Loading reports...</span>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th style="white-space: nowrap;">Patient Name</th>
+                <th>Tests</th>
+                <th style="white-space: nowrap;">Referred By</th>
+                <th>Status</th>
+                <th class="text-end">Audit</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (recentReportsList.length === 0) {
+                <tr>
+                  <td colspan="5" class="empty-table-state">No reports recorded in the system yet.</td>
+                </tr>
+              }
+              @for (report of recentReportsList; track report._id) {
+                <tr>
+                  <td class="fw-bold">
+                    {{ report.patient?.accountId?.name || 'Unnamed Patient' }}
+                  </td>
+                  <td>
+                    <div class="tests-tags-wrap">
+                      <span *ngFor="let t of report.tests" class="test-tag-small">
+                        {{ t.testName }}
+                      </span>
+                      <span *ngIf="!report.tests?.length" class="text-secondary">—</span>
+                    </div>
+                  </td>
+                  <td class="text-secondary">{{ report.referredBy || '—' }}</td>
+                  <td>
+                    <span class="status-badge" [ngClass]="report.reportStatus?.toLowerCase() || 'pending'">
+                      {{ report.reportStatus || 'Pending' }}
+                    </span>
+                  </td>
+                  <td class="text-end">
+                    <button class="audit-btn" (click)="openAuditPopup(report)">Review</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
 
     </div>
 
