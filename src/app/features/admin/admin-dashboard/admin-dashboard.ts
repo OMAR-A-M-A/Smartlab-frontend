@@ -1,17 +1,21 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule, Router } from '@angular/router';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog'; // 🌟 1. استدعاء الماتيريال دايالوج
+
 import { Reports } from '../../../core/services/reports/reports';
-import { ManagePatients as PatientService} from '../../../core/services/manage-patients/manage-patients';
+import { ManagePatients as PatientService } from '../../../core/services/manage-patients/manage-patients';
 import { Booking } from '../../../core/services/booking/booking';
 import { ManageStaffServices } from '../../../core/services/staff/staff-services';
 import { TestRef } from '../../../core/services/test-reference/test-ref';
-import { RouterModule } from '@angular/router';
+import { SharedPopup } from '../../../shared/components/shared-popup/shared-popup';
 
 @Component({
   selector: 'app-admin-dashboard',
+  standalone: true,
   imports: [CommonModule, NgApexchartsModule, RouterModule],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
@@ -23,6 +27,8 @@ export class AdminDashboard implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private testRefService = inject(TestRef);
   private staffService = inject(ManageStaffServices);
+  private dialog = inject(MatDialog); // 🌟 حقن الدايالوج
+  private router = inject(Router);
 
   isLoading = true;
 
@@ -36,6 +42,9 @@ export class AdminDashboard implements OnInit {
   completedReports = 0;
   readyReports = 0;
   inProgressReports = 0;
+
+  // 🌟 مصفوفة لتخزين أحدث التقارير وعرضها في الجدول
+  recentReportsList: any[] = [];
 
   get statsCards() {
     return [
@@ -116,7 +125,6 @@ export class AdminDashboard implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-
     const today = new Date().toISOString().split('T')[0];
 
     forkJoin({
@@ -136,6 +144,14 @@ export class AdminDashboard implements OnInit {
         this.totalStaff = staff?.results ?? staff?.data?.length ?? 0;
 
         const reportsData: any[] = reports?.data || [];
+
+        // 🌟 سحب أول 6 تقارير لفرشهم في الجدول السفلي (نفضل إظهار الخطيرة لو متاحة)
+        const dangerousData: any[] = dangerous?.data || [];
+        this.recentReportsList = (dangerousData.length > 0 ? dangerousData : reportsData).slice(
+          0,
+          6,
+        );
+
         this.completedReports = reportsData.filter(
           (r) =>
             r.reportStatus?.toLowerCase() === 'sent' ||
@@ -162,6 +178,37 @@ export class AdminDashboard implements OnInit {
         this.isLoading = false;
         this.cdr.detectChanges();
       },
+    });
+  }
+
+  // =======================================================
+  // 🌟 دالة فتح البوب-أب التحذيري للأدمن (System Audit)
+  // =======================================================
+  openAuditPopup(report: any): void {
+    const patientName = report.accountId?.name || report.patientName || 'Target Record';
+    const status = report.reportStatus || 'Pending';
+
+    const dialogRef = this.dialog.open(SharedPopup, {
+      panelClass: 'custom-dialog-container',
+      data: {
+        type: 'warning',
+        title: 'System Audit: Action Required',
+        descriptionTextBeforeName: 'The lab report for ',
+        patientName: patientName, // يظهر مميز و Bold
+        descriptionTextAfterName: ` currently flagged as (${status}) requires administrative review or validation.`,
+        showClose: true,
+        actions: [
+          { label: 'Full Audit', type: 'primary', value: 'audit' },
+          { label: 'Dismiss', type: 'outline', value: 'close' },
+        ],
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((actionValue) => {
+      if (actionValue === 'audit') {
+        // التوجيه لصفحة التقارير الخطيرة مع تمرير الـ ID لفتحه مباشرة
+        this.router.navigate(['/admin/dangerous-reports'], { queryParams: { target: report._id } });
+      }
     });
   }
 }
