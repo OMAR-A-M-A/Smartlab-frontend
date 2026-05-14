@@ -10,7 +10,9 @@
 .dash-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
   margin-bottom: 24px;
 }
 .dash-title {
@@ -23,6 +25,28 @@
   color: #64748b;
   margin: 0;
 }
+
+/* 🌟 Header Action Buttons */
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+.btn {
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+.btn-primary { background: #006adc; color: #fff; }
+.btn-primary:hover { background: #0056b3; }
+.btn-outline { background: #eff8ff; color: #006adc; border: 1px solid #bae6fd; }
+.btn-outline:hover { background: #e0f2fe; }
 
 /* Stats Grid — 6 كروت */
 .stats-grid {
@@ -70,9 +94,17 @@
   color: #101828;
 }
 
+/* 🌟 Dashboard Main Grid (Chart + Table) */
+.dashboard-main-grid {
+  display: grid;
+  grid-template-columns: 480px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
 /* Chart Card */
 .chart-card {
-  max-width: 520px;
+  width: 100%;
 }
 .ui-card {
   background: #fff;
@@ -80,6 +112,7 @@
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+  box-sizing: border-box;
 }
 .ui-card-header {
   display: flex;
@@ -122,67 +155,93 @@
 .bg-navy   { background: #1e293b; }
 .bg-yellow { background: #eab308; }
 
-/* Responsive */
+/* 🌟 Table Section Styles */
+.table-card {
+  min-height: 358px;
+}
+.badge-count {
+  font-size: 11.5px;
+  background: #f1f5f9;
+  padding: 4px 10px;
+  border-radius: 20px;
+  color: #64748b;
+  font-weight: 600;
+}
+.table-responsive {
+  overflow-x: auto;
+}
+.dash-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13.5px;
+}
+.dash-table th {
+  padding: 12px 10px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
+  border-bottom: 1px solid #f1f5f9;
+}
+.dash-table td {
+  padding: 14px 10px;
+  border-bottom: 1px solid #f8fafc;
+  vertical-align: middle;
+}
+.dash-table tr:last-child td { border-bottom: none; }
+
+.fw-bold { font-weight: 600; color: #0f172a; }
+.text-secondary { color: #64748b; }
+
+/* Status Badges */
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.status-badge.sent, .status-badge.completed { background: #dcfce7; color: #15803d; }
+.status-badge.ready { background: #f1f5f9; color: #334155; }
+.status-badge.in-progress, .status-badge.pending { background: #fef9c3; color: #ca8a04; }
+
+/* Audit Button */
+.audit-btn {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.audit-btn:hover { background: #f8fafc; border-color: #cbd5e1; color: #0f172a; }
+.empty-table-state { text-align: center; padding: 30px !important; color: #94a3b8; }
+
+/* ========================================= */
+/* Responsive Rules                          */
+/* ========================================= */
 @media (max-width: 1280px) {
   .stats-grid { grid-template-columns: repeat(3, 1fr); }
+  .dashboard-main-grid { grid-template-columns: 1fr; }
 }
+
 @media (max-width: 768px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .dash-container { padding: 16px; }
-}
-/* Responsive */
-@media (max-width: 1280px) {
-  .stats-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-
-  .dash-container {
-    padding: 16px;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  /* FIX CHART CARD */
-  .chart-card {
-    max-width: 100%;
-    overflow: hidden;
-  }
-
-  .chart-flex {
-    flex-direction: column;
-    align-items: center;
-    gap: 24px;
-  }
-
-  .chart-wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-
-  .custom-legend {
-    width: 100%;
-    align-items: flex-start;
-  }
+  .dash-header { flex-direction: column; align-items: stretch; }
+  .header-actions { justify-content: flex-end; margin-top: 10px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  
+  .chart-flex { flex-direction: column; align-items: center; gap: 24px; }
+  .chart-wrapper { width: 100%; display: flex; justify-content: center; }
+  .custom-legend { width: 100%; align-items: flex-start; }
 }
 
 @media (max-width: 480px) {
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .stat-card {
-    padding: 18px;
-  }
-
-  .stat-number {
-    font-size: 28px;
-  }
-
+  .stats-grid { grid-template-columns: 1fr; }
+  .stat-card { padding: 18px; }
+  .stat-number { font-size: 28px; }
 }

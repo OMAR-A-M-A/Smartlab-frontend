@@ -3,14 +3,16 @@ import { CommonModule } from '@angular/common';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
 import { Reports } from '../../../core/services/reports/reports';
 import { Booking } from '../../../core/services/booking/booking';
-import { ManagePatients as PatientService} from '../../../core/services/manage-patients/manage-patients';
+import { ManagePatients as PatientService } from '../../../core/services/manage-patients/manage-patients';
 import { Auth } from '../../../core/services/auth/auth';
-
+import { SharedPopup } from '../../../shared/components/shared-popup/shared-popup';
 
 @Component({
   selector: 'app-staff-dashboard',
+  standalone: true,
   imports: [CommonModule, NgApexchartsModule],
   templateUrl: './staff-dashboard.html',
   styleUrl: './staff-dashboard.css',
@@ -21,18 +23,21 @@ export class StaffDashboard implements OnInit {
   private patientService = inject(PatientService);
   private cdr = inject(ChangeDetectorRef);
   private authService = inject(Auth);
+  private dialog = inject(MatDialog);
 
   staffName = '';
-
   isLoading = true;
 
+  // الإحصائيات
   totalReports = 0;
   totalAppointments = 0;
   totalPatients = 0;
-
   completedReports = 0;
   readyReports = 0;
   inProgressReports = 0;
+
+  // داتا الجدول
+  recentAppointments: any[] = [];
 
   get statsCards() {
     return [
@@ -62,7 +67,7 @@ export class StaffDashboard implements OnInit {
 
   chartOptions: any = {
     series: [0, 0, 0],
-    labels: ['Sent to patient (completed)', 'Ready to send', 'In-Progress'],
+    labels: ['Sent (completed)', 'Ready', 'In-Progress'],
     colors: ['#22c55e', '#1e293b', '#eab308'],
     chart: { type: 'donut', height: 250, fontFamily: 'Inter, sans-serif' },
     plotOptions: {
@@ -76,7 +81,7 @@ export class StaffDashboard implements OnInit {
             total: {
               show: true,
               showAlways: true,
-              label: 'overall',
+              label: 'Overall',
               formatter: (w: any) =>
                 w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0).toString(),
             },
@@ -87,11 +92,15 @@ export class StaffDashboard implements OnInit {
     dataLabels: { enabled: false },
     stroke: { show: true, colors: ['#fff'], width: 4 },
     legend: { show: false },
-    tooltip: { enabled: true, y: { formatter: (val: number) => val.toString() } },
+    tooltip: { enabled: true },
   };
 
   ngOnInit(): void {
     this.staffName = this.authService.getUserName() || 'Staff';
+    this.loadDashboardData();
+  }
+
+  loadDashboardData() {
     this.isLoading = true;
     const today = new Date().toISOString().split('T')[0];
 
@@ -101,25 +110,31 @@ export class StaffDashboard implements OnInit {
       patients: this.patientService.getAllPatients().pipe(catchError(() => of(null))),
     }).subscribe({
       next: ({ reports, appointments, patients }) => {
+        // تحديث الأرقام
         this.totalReports = reports?.results ?? reports?.data?.length ?? 0;
         this.totalAppointments = appointments?.results ?? appointments?.data?.length ?? 0;
         this.totalPatients = patients?.results ?? patients?.data?.length ?? 0;
 
+        // تحديث داتا الجدول (أول 5 مواعيد اليوم)
+        this.recentAppointments = (appointments?.data || []).slice(0, 5);
+
+        // تحديث الشارت
         const reportsData: any[] = reports?.data || [];
         this.completedReports = reportsData.filter((r) =>
-          r.reportStatus?.toLowerCase() === 'sent' || r.reportStatus?.toLowerCase() === 'completed'
+          ['sent', 'completed'].includes(r.reportStatus?.toLowerCase()),
         ).length;
-        this.readyReports = reportsData.filter((r) =>
-          r.reportStatus?.toLowerCase() === 'ready'
+        this.readyReports = reportsData.filter(
+          (r) => r.reportStatus?.toLowerCase() === 'ready',
         ).length;
         this.inProgressReports = reportsData.filter((r) =>
-          r.reportStatus?.toLowerCase() === 'in-progress' || r.reportStatus?.toLowerCase() === 'pending'
+          ['in-progress', 'pending'].includes(r.reportStatus?.toLowerCase()),
         ).length;
 
-        this.chartOptions = {
-          ...this.chartOptions,
-          series: [this.completedReports, this.readyReports, this.inProgressReports],
-        };
+        this.chartOptions.series = [
+          this.completedReports,
+          this.readyReports,
+          this.inProgressReports,
+        ];
 
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -127,6 +142,26 @@ export class StaffDashboard implements OnInit {
       error: () => {
         this.isLoading = false;
         this.cdr.detectChanges();
+      },
+    });
+  }
+
+  // 🌟 تشغيل الـ Pop-up (الشكل رقم 5 - Action Required)
+  openReviewPopup(patientName: string) {
+    this.dialog.open(SharedPopup, {
+      panelClass: 'custom-dialog-container',
+      data: {
+        type: 'warning',
+        title: 'Action Required: Review Results',
+        descriptionTextBeforeName: 'The lab results for ',
+        patientName: patientName,
+        descriptionTextAfterName:
+          ' contain abnormal values that require medical validation before sending.',
+        showClose: true,
+        actions: [
+          { label: 'Review Now', type: 'primary', value: 'review' },
+          { label: 'Later', type: 'outline', value: 'cancel' },
+        ],
       },
     });
   }

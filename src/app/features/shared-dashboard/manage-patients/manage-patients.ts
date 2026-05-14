@@ -1,24 +1,24 @@
-import { PatientModal } from './../../../shared/components/patient-modal/patient-modal';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-
-import { MatIconModule, MatIcon } from '@angular/material/icon';
-import {ManagePatients as ManPatient} from '../../../core/services/manage-patients/manage-patients';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
+import { ManagePatients as ManPatient } from '../../../core/services/manage-patients/manage-patients';
+import { PatientModal } from './../../../shared/components/patient-modal/patient-modal';
+import { SharedPopup } from '../../../shared/components/shared-popup/shared-popup';
 
 @Component({
   selector: 'app-manage-patients',
+  standalone: true,
   imports: [
     CommonModule,
     MatDialogModule,
@@ -30,13 +30,11 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatInputModule,
     MatIconModule,
     MatSnackBarModule,
-
   ],
   templateUrl: './manage-patients.html',
   styleUrl: './manage-patients.css',
 })
 export class ManagePatients implements OnInit {
-  // أضف هذا السطر وتعريف أسماء الأعمدة بدقة
   displayedColumns: string[] = [
     'name',
     'email',
@@ -59,17 +57,20 @@ export class ManagePatients implements OnInit {
     private PatientService: ManPatient,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
-
+    private router: Router,
   ) {}
+
+  ngOnInit() {
+    this.loadPatients();
+  }
 
   loadPatients() {
     this.PatientService.getAllPatients().subscribe({
       next: (res) => {
-        this.dataSource.data = res.data.patients;
+        this.dataSource.data = res.data.patients || [];
 
         this.dataSource.filterPredicate = (data: any, filter: string) => {
           const search = filter.trim().toLowerCase();
-
           return (
             data.accountId?.name?.toLowerCase().includes(search) ||
             data.accountId?.email?.toLowerCase().includes(search) ||
@@ -82,11 +83,11 @@ export class ManagePatients implements OnInit {
           this.dataSource.sort = this.sort;
         });
       },
+      error: (err) => {
+        console.error('Failed to load patients list:', err);
+        this.showMessage('Failed to load patient records.', true);
+      },
     });
-  }
-
-  ngOnInit() {
-    this.loadPatients();
   }
 
   applyFilter(event: Event) {
@@ -98,21 +99,26 @@ export class ManagePatients implements OnInit {
     }
   }
 
+
   openAddModal() {
     const dialogRef = this.dialog.open(PatientModal, { width: '600px' });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) return;
 
-
-      // تغيير result.job إلى result.medicalData
-      this.PatientService.createPatient({
+      const payload = {
         accountId: result.accountId,
-        ...result.medicalData, // التأكد من الاسم هنا
-      }).subscribe({
-        next: () => {
+        ...result.medicalData,
+      };
+
+      this.PatientService.createPatient(payload).subscribe({
+        next: (res) => {
           this.loadPatients();
-          this.showMessage('Patient added successfully');
+
+          const patientName = res?.data?.accountId?.name || result.accountId?.name || 'New Patient';
+          const generatedId = res?.data?.accountId?.patientId || res?.data?._id || '#AD-45532';
+
+          this.openPatientCreatedPopup(patientName, generatedId);
         },
         error: (err) => {
           this.showMessage(err.error?.message || 'Failed to add patient', true);
@@ -120,6 +126,7 @@ export class ManagePatients implements OnInit {
       });
     });
   }
+
 
   openEditModal(patient: any) {
     const dialogRef = this.dialog.open(PatientModal, {
@@ -130,11 +137,13 @@ export class ManagePatients implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (!result || !result.medicalData) return;
 
-      // تحديث البيانات الطبية
       this.PatientService.updatePatient(patient._id, result.medicalData).subscribe({
         next: () => {
           this.loadPatients();
-          this.showMessage('Patient updated successfully');
+
+          const patientName = patient.accountId?.name || 'Patient';
+
+          this.openResultsUpdatedPopup(patientName);
         },
         error: (err) => {
           this.showMessage(err.error?.message || 'Failed to update patient', true);
@@ -142,21 +151,88 @@ export class ManagePatients implements OnInit {
       });
     });
   }
-  deletePatient(id: string) {
-    this.PatientService.deletePatient(id).subscribe({
-        next: () => {
-          this.loadPatients();
-          this.showMessage('Staff deleted successfully');
-        },
-        error: (err) => {
-          this.showMessage(err.error?.message || 'Failed to delete patient', true);
-        },
-      });
+
+
+  deletePatient(id: string, patientName?: string) {
+    const targetName = patientName || 'this patient';
+
+    const dialogRef = this.dialog.open(SharedPopup, {
+      panelClass: 'custom-dialog-container',
+      data: {
+        type: 'danger',
+        title: 'Are You Sure You Want Delete Patient Records ?',
+        fullDescription: `By pressing confirm, you will permanently lose records for ${targetName}.`,
+        showClose: true,
+        actions: [
+          { label: 'Delete Records', type: 'danger', value: 'confirm_delete' },
+          { label: 'Keep Records', type: 'primary', value: 'cancel' },
+        ],
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((actionValue) => {
+      if (actionValue === 'confirm_delete') {
+        this.PatientService.deletePatient(id).subscribe({
+          next: () => {
+            this.loadPatients();
+            this.showMessage('Patient records deleted successfully.');
+          },
+          error: (err) => {
+            this.showMessage(err.error?.message || 'Failed to delete patient', true);
+          },
+        });
+      }
+    });
   }
 
-   showMessage(message: string, isError = false) {
+
+
+  private openPatientCreatedPopup(patientName: string, generatedId: string): void {
+    const dialogRef = this.dialog.open(SharedPopup, {
+      panelClass: 'custom-dialog-container',
+      disableClose: true,
+      data: {
+        type: 'success',
+        title: 'Patient Records Added Successfully!',
+        descriptionTextBeforeName: 'The record for ',
+        patientName: patientName,
+        descriptionTextAfterName: ' has been created and the Access ID has been generated',
+        patientId: generatedId,
+        showClose: true,
+        actions: [
+          { label: 'View Patient', type: 'outline', value: 'view' },
+          { label: 'Go Dashboard', type: 'primary', value: 'dashboard' },
+        ],
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((actionValue) => {
+      if (actionValue === 'dashboard') {
+        this.router.navigate(['/staff/dashboard']);
+      }
+    });
+  }
+
+  // استدعاء الشكل رقم 2 (تعديل السجلات)
+  private openResultsUpdatedPopup(patientName: string): void {
+    this.dialog.open(SharedPopup, {
+      panelClass: 'custom-dialog-container',
+      data: {
+        type: 'success',
+        title: 'Patient Records Updated Successfully!',
+        descriptionTextBeforeName: 'The medical data for ',
+        patientName: patientName,
+        descriptionTextAfterName: ' has been saved and is active.',
+        showClose: true,
+        actions: [{ label: 'Continue', type: 'primary', value: 'close' }],
+      },
+    });
+  }
+
+  // الفولباك للرسائل السريعة أو الأخطاء
+  showMessage(message: string, isError = false) {
     this.snackBar.open(message, 'Close', {
-      duration: 3000,
+      duration: 3500,
       horizontalPosition: 'right',
       verticalPosition: 'bottom',
       panelClass: isError ? ['error-snackbar'] : ['success-snackbar'],

@@ -24,7 +24,7 @@ export class ResetPassword implements OnInit {
 
   ngOnInit() {
     // Get token from URL (e.g., /reset-password?token=xyz)
-    this.token = this.route.snapshot.queryParamMap.get('token');
+    this.token = this.route.snapshot.paramMap.get('token');
   }
 
   onSubmit() {
@@ -35,19 +35,29 @@ export class ResetPassword implements OnInit {
       this.snackBar.open('Passwords do not match!', 'Close', { duration: 3000 });
       return;
     }
+    const cleanToken = this.token.trim();
+    const payload = {
+      password: newPassword,
+    };
 
-    const payload = { password: newPassword };
-
-    this.authService.resetPassword(this.token ,payload).subscribe({
+    this.authService.resetPassword(cleanToken, payload).subscribe({
       next: () => {
         this.snackBar.open('Password reset successful! You can now login.', 'Close', {
           duration: 4000,
+          panelClass: ['success-snackbar'],
         });
+        localStorage.clear();
         this.router.navigate(['/login']);
       },
-      error: () => {
-        this.snackBar.open('Error resetting password. The link might be expired.', 'Close', {
+      error: (err) => {
+        const backendErrorMessage =
+          err.error?.message ||
+          err.error?.error ||
+          'Error resetting password. The link might be expired.';
+        // this.snackBar.open('Error resetting password. The link might be expired.', 'Close', {
+        this.snackBar.open(`Failed: ${backendErrorMessage}`, 'Close', {
           duration: 4000,
+          panelClass: ['error-snackbar'],
         });
       },
     });
