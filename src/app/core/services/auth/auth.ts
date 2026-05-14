@@ -40,6 +40,10 @@ export class Auth {
     return this.http.get(`${this.baseUrl}/staff/staffProfile`);
   }
 
+  getAdminProfile(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/account/adminProfile`);
+  }
+
   //functions to use in auth
   saveToken(token: string): void {
     localStorage.setItem('token', token);
@@ -74,6 +78,10 @@ export class Auth {
     return localStorage.getItem('userName');
   }
 
+  setUserGender(gender:string): void {
+    localStorage.setItem('userGender', gender);
+  }
+  
   getUserGender(): string | null {
     return localStorage.getItem('userGender');
   }

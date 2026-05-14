@@ -37,7 +37,7 @@ export class AccountSettings implements OnInit {
   };
 
   userRole: string = '';
-  isLoadingStaffData: boolean = false;
+  isLoadingData: boolean = false;
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
 
@@ -51,9 +51,7 @@ export class AccountSettings implements OnInit {
   ngOnInit(): void {
     this.detectUserRole();
     this.initForms();
-    if (this.userRole === 'staff') {
-      this.fetchStaffProfileData();
-    }
+    this.fetchTargetProfile();
   }
 
   detectUserRole(): void {
@@ -85,14 +83,54 @@ export class AccountSettings implements OnInit {
     }
     return null;
   }
+  // Routes requests depending on detected account authorization tier
+  fetchTargetProfile(): void {
+    if (this.userRole === 'admin') {
+      this.fetchAdminProfileData();
+    } else if (this.userRole === 'staff') {
+      this.fetchStaffProfileData();
+    } else {
+      this.populateFromLocalCache();
+    }
+  }
+
+  fetchAdminProfileData(): void {
+    this.isLoadingData = true;
+    this.cdr.detectChanges();
+
+    this.authService.getAdminProfile().subscribe({
+      next: (res) => {
+        const data = res?.data || res;
+        if (data) {
+          // Adjust logic based on whether backend exposes flat properties or nested account documents
+          const targetUser = data.accountId || data;
+          const nameParts = (targetUser.name || 'System Admin').split(' ');
+
+          this.currentUser = {
+            firstName: nameParts[0] || '',
+            lastName: nameParts.slice(1).join(' ') || '',
+            email: targetUser.email || '',
+            phone: targetUser.phone || '',
+          };
+        }
+        this.isLoadingData = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Failed to parse remote admin profile integration:', err);
+        this.populateFromLocalCache();
+        this.isLoadingData = false;
+        this.cdr.detectChanges();
+      },
+    });
+  }
 
   fetchStaffProfileData(): void {
-    this.isLoadingStaffData = true;
+    this.isLoadingData = true;
     this.cdr.detectChanges();
 
     this.authService.getStaffProfile().subscribe({
       next: (res) => {
-        // Adapt checks gracefully to handle raw payloads or nested data keys
         const data = res?.data || res;
         if (data) {
           this.staffInfo = {
@@ -101,15 +139,18 @@ export class AccountSettings implements OnInit {
             salary: data.salary ? `${data.salary} EGP` : 'Confidential',
             nationalId: data.nationalId || 'N/A',
           };
+
+          const targetUser = data.accountId || data;
+          const nameParts = (targetUser.name || 'User Name').split(' ');
+
+          this.currentUser = {
+            firstName: nameParts[0] || '',
+            lastName: nameParts.slice(1).join(' ') || '',
+            email: targetUser.email || '',
+            phone: targetUser.phone || '',
+          };
         }
-        const nameParts = (data.accountId.name || 'User Name').split(' ');
-        this.currentUser = {
-          firstName: nameParts[0] || '',
-          lastName: nameParts.slice(1).join(' ') || '',
-          email: data.accountId.email || '',
-          phone: data.accountId.phone || '',
-        };
-        this.isLoadingStaffData = false;
+        this.isLoadingData = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -120,11 +161,30 @@ export class AccountSettings implements OnInit {
           salary: 'Confidential',
           nationalId: 'Unavailable',
         };
-        this.isLoadingStaffData = false;
+        this.populateFromLocalCache();
+        this.isLoadingData = false;
         this.cdr.detectChanges();
       },
     });
   }
+
+  // Seamless fallback loading mechanism reading user keys from runtime context
+  populateFromLocalCache(): void {
+    const cached = localStorage.getItem('user');
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        const nameParts = (parsed.name || 'System User').split(' ');
+        this.currentUser = {
+          firstName: nameParts[0] || '',
+          lastName: nameParts.slice(1).join(' ') || '',
+          email: parsed.email || '',
+          phone: parsed.phone || '',
+        };
+      } catch (e) {}
+    }
+  }
+
   // --- Handlers ---
   openProfileModal(): void {
     this.errorMessage = '';

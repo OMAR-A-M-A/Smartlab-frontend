@@ -1,29 +1,24 @@
-import { PatientModal } from './../../../shared/components/patient-modal/patient-modal';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-
 import { MatIconModule } from '@angular/material/icon';
-
-import { ManagePatients as ManPatient } from '../../../core/services/manage-patients/manage-patients';
-
-import { Component, OnInit, ViewChild , ChangeDetectorRef} from '@angular/core';
-
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { Router } from '@angular/router';
+import { ManagePatients as ManPatient } from '../../../core/services/manage-patients/manage-patients';
+import { PatientModal } from './../../../shared/components/patient-modal/patient-modal';
+import { SharedPopup } from '../../../shared/components/shared-popup/shared-popup';
 
 @Component({
   selector: 'app-manage-patients',
-
+  standalone: true,
   imports: [
     CommonModule,
     MatDialogModule,
@@ -43,7 +38,6 @@ import { Router } from '@angular/router';
 })
 
 export class ManagePatients implements OnInit {
-
   displayedColumns: string[] = [
     'name',
     'email',
@@ -70,76 +64,37 @@ export class ManagePatients implements OnInit {
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private router: Router,
-    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
-
     this.loadPatients();
-
   }
 
   loadPatients() {
+    this.PatientService.getAllPatients().subscribe({
+      next: (res) => {
+        this.dataSource.data = res.data.patients || [];
 
-  this.isLoading = true;
+        this.dataSource.filterPredicate = (data: any, filter: string) => {
+          const search = filter.trim().toLowerCase();
+          return (
+            data.accountId?.name?.toLowerCase().includes(search) ||
+            data.accountId?.email?.toLowerCase().includes(search) ||
+            data.accountId?.patientId?.toLowerCase().includes(search)
+          );
+        };
 
-  this.cdr.detectChanges();
-
-  this.PatientService.getAllPatients().subscribe({
-
-    next: (res) => {
-
-      this.dataSource.data = res.data.patients;
-
-      this.dataSource.filterPredicate = (
-        data: any,
-        filter: string
-      ) => {
-
-        const search = filter.trim().toLowerCase();
-
-        return (
-
-          data.accountId?.name?.toLowerCase().includes(search) ||
-
-          data.accountId?.email?.toLowerCase().includes(search) ||
-
-          data.accountId?.patientId?.toLowerCase().includes(search)
-
-        );
-
-      };
-
-      setTimeout(() => {
-
-        this.dataSource.paginator = this.paginator;
-
-        this.dataSource.sort = this.sort;
-
-        this.isLoading = false;
-
-        this.cdr.detectChanges();
-
-      });
-
-    },
-
-    error: (err) => {
-
-      this.isLoading = false;
-
-      this.cdr.detectChanges();
-
-      this.showMessage(
-        err.error?.message || 'Failed to load patients',
-        true
-      );
-
-    },
-
-  });
-
-}
+        setTimeout(() => {
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+        });
+      },
+      error: (err) => {
+        console.error('Failed to load patients list:', err);
+        this.showMessage('Failed to load patient records.', true);
+      },
+    });
+  }
 
   applyFilter(event: Event) {
 
@@ -157,6 +112,7 @@ export class ManagePatients implements OnInit {
     }
 
   }
+
 
   openAddModal() {
 
@@ -204,6 +160,7 @@ export class ManagePatients implements OnInit {
 
   }
 
+
   openEditModal(patient: any) {
 
     const dialogRef = this.dialog.open(
@@ -248,29 +205,90 @@ export class ManagePatients implements OnInit {
 
   }
 
-  deletePatient(id: string) {
 
-    this.PatientService.deletePatient(id).subscribe({
+  deletePatient(id: string, patientName?: string) {
+    const targetName = patientName || 'this patient';
 
-      next: () => {
-
-        this.loadPatients();
-
-        this.showMessage(
-          'Patient deleted successfully'
-        );
-
+    const dialogRef = this.dialog.open(SharedPopup, {
+      panelClass: 'custom-dialog-container',
+      data: {
+        type: 'danger',
+        title: 'Are You Sure You Want Delete Patient Records ?',
+        fullDescription: `By pressing confirm, you will permanently lose records for ${targetName}.`,
+        showClose: true,
+        actions: [
+          { label: 'Delete Records', type: 'danger', value: 'confirm_delete' },
+          { label: 'Keep Records', type: 'primary', value: 'cancel' },
+        ],
       },
+    });
 
-      error: (err) => {
+    dialogRef.afterClosed().subscribe((actionValue) => {
+      if (actionValue === 'confirm_delete') {
+        this.PatientService.deletePatient(id).subscribe({
+          next: () => {
+            this.loadPatients();
+            this.showMessage('Patient records deleted successfully.');
+          },
+          error: (err) => {
+            this.showMessage(err.error?.message || 'Failed to delete patient', true);
+          },
+        });
+      }
+    });
+  }
 
-        this.showMessage(
-          err.error?.message || 'Failed to delete patient',
-          true
-        );
 
+
+  private openPatientCreatedPopup(patientName: string, generatedId: string): void {
+    const dialogRef = this.dialog.open(SharedPopup, {
+      panelClass: 'custom-dialog-container',
+      disableClose: true,
+      data: {
+        type: 'success',
+        title: 'Patient Records Added Successfully!',
+        descriptionTextBeforeName: 'The record for ',
+        patientName: patientName,
+        descriptionTextAfterName: ' has been created and the Access ID has been generated',
+        patientId: generatedId,
+        showClose: true,
+        actions: [
+          { label: 'View Patient', type: 'outline', value: 'view' },
+          { label: 'Go Dashboard', type: 'primary', value: 'dashboard' },
+        ],
       },
+    });
 
+    dialogRef.afterClosed().subscribe((actionValue) => {
+      if (actionValue === 'dashboard') {
+        this.router.navigate(['/staff/dashboard']);
+      }
+    });
+  }
+
+  // استدعاء الشكل رقم 2 (تعديل السجلات)
+  private openResultsUpdatedPopup(patientName: string): void {
+    this.dialog.open(SharedPopup, {
+      panelClass: 'custom-dialog-container',
+      data: {
+        type: 'success',
+        title: 'Patient Records Updated Successfully!',
+        descriptionTextBeforeName: 'The medical data for ',
+        patientName: patientName,
+        descriptionTextAfterName: ' has been saved and is active.',
+        showClose: true,
+        actions: [{ label: 'Continue', type: 'primary', value: 'close' }],
+      },
+    });
+  }
+
+  // الفولباك للرسائل السريعة أو الأخطاء
+  showMessage(message: string, isError = false) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3500,
+      horizontalPosition: 'right',
+      verticalPosition: 'bottom',
+      panelClass: isError ? ['error-snackbar'] : ['success-snackbar'],
     });
 
   }

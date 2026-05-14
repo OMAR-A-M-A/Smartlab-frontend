@@ -1,12 +1,12 @@
 import { Component, inject } from '@angular/core';
-import { Router,RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Auth } from '../../../core/services/auth/auth';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule ,RouterModule],
+  imports: [ReactiveFormsModule, RouterModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -30,6 +30,11 @@ export class Login {
       next: (response: any) => {
         this.authService.saveToken(response.token);
         this.authService.saveRole(response.data.role);
+        if (response.data.gender) {
+          this.authService.setUserGender(response.data.gender.toLowerCase());
+        } else if (response.data.accountId?.gender) {
+          this.authService.setUserGender(response.data.accountId.gender.toLowerCase());
+        }
         this.snackBar.open(`logged In Successfully, Welcome ${response.data.role}`, 'Close', {
           duration: 3000,
           horizontalPosition: 'end',
@@ -39,8 +44,8 @@ export class Login {
         if (response.data.role === 'admin' || response.data.role === 'staff') {
           this.router.navigate(['/']);
         } else if (response.data.role === 'patient') {
-          if (response.isFirstLogin) {
-            this.router.navigate(['/change-password']);
+          if (response.data.isFirstLogin) {
+            this.router.navigate(['/reset-password', response.token]);
           } else {
             this.router.navigate(['/']);
           }

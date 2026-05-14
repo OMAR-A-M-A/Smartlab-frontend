@@ -1,70 +1,81 @@
 <div class="dash-container">
-
-  <!-- Header -->
   <div class="dash-header">
     <div>
-      @if (isLoading) {
-        <h1 class="dash-title">Welcome back</h1>
-      } @else {
-        <h1 class="dash-title">Welcome back {{ staffName }}</h1>
-      }
+      <h1 class="dash-title">Welcome back, {{ isLoading ? '...' : staffName }}</h1>
       <p class="dash-subtitle">Manage lab reports, daily schedule, and test references.</p>
     </div>
   </div>
 
-  <!-- Stats Grid -->
   <div class="stats-grid">
     <div class="stat-card" *ngFor="let stat of statsCards">
       <div class="stat-top">
         <div class="stat-icon" [style.backgroundColor]="stat.bg" [style.color]="stat.color">
-          <i [class]="stat.icon" style="font-size: 20px;"></i>
+          <i [class]="stat.icon"></i>
         </div>
         <span class="stat-label">{{ stat.title }}</span>
       </div>
       <div class="stat-number">
-        @if (isLoading) {
-          <span class="placeholder-glow"><span class="placeholder col-4"></span></span>
-        } @else {
-          {{ stat.value }}
-        }
+        <ng-container *ngIf="!isLoading; else loader">{{ stat.value }}</ng-container>
       </div>
     </div>
   </div>
 
-  <!-- Chart -->
-  <div class="ui-card chart-card">
-    <div class="ui-card-header">
-      <h3 class="ui-card-title">Reports Overview</h3>
-    </div>
-    <div class="chart-flex">
-      <div class="chart-wrapper">
-        <apx-chart
-          [series]="chartOptions.series"
-          [chart]="chartOptions.chart"
-          [labels]="chartOptions.labels"
-          [colors]="chartOptions.colors"
-          [plotOptions]="chartOptions.plotOptions"
-          [dataLabels]="chartOptions.dataLabels"
-          [stroke]="chartOptions.stroke"
-          [legend]="chartOptions.legend"
-          [tooltip]="chartOptions.tooltip">
-        </apx-chart>
+  <div class="dashboard-main-grid">
+    <div class="ui-card chart-card">
+      <div class="ui-card-header">
+        <h3 class="ui-card-title">Reports Overview</h3>
       </div>
-      <div class="custom-legend">
-        <div class="legend-row">
-          <span class="dot bg-green"></span>
-          <span>Sent to patient (completed)</span>
+      <div class="chart-flex">
+        <div class="chart-wrapper">
+          <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [labels]="chartOptions.labels"
+            [colors]="chartOptions.colors" [plotOptions]="chartOptions.plotOptions" [legend]="chartOptions.legend">
+          </apx-chart>
         </div>
-        <div class="legend-row">
-          <span class="dot bg-navy"></span>
-          <span>Ready to send</span>
+        <div class="custom-legend">
+          <div class="legend-row"><span class="dot bg-green"></span><span>Completed</span></div>
+          <div class="legend-row"><span class="dot bg-navy"></span><span>Ready</span></div>
+          <div class="legend-row"><span class="dot bg-yellow"></span><span>In-Progress</span></div>
         </div>
-        <div class="legend-row">
-          <span class="dot bg-yellow"></span>
-          <span>In-Progress</span>
-        </div>
+      </div>
+    </div>
+
+    <div class="ui-card table-card">
+      <div class="ui-card-header">
+        <h3 class="ui-card-title">Today's Schedule</h3>
+        <span class="badge-count">{{ recentAppointments.length }} Appointments</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="dash-table">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Test Type</th>
+              <th>Time</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let app of recentAppointments">
+              <td class="fw-600">{{ app.accountId?.name || 'Anonymous' }}</td>
+              <td class="text-muted">{{ app.appointmentType || 'Lab Visit' }}</td>
+              <td><span class="time-tag">{{ app.time }}</span></td>
+              <td>
+                <button class="review-btn" (click)="openReviewPopup(app.accountId?.name)">
+                  Review
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="!isLoading && recentAppointments.length === 0">
+              <td colspan="4" class="empty-state">No appointments for today.</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
-
 </div>
+
+<ng-template #loader>
+  <span class="placeholder-glow"><span class="placeholder col-4"></span></span>
+</ng-template>

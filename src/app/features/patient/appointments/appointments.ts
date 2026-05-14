@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { Booking } from '../../../core/services/booking/booking';
 import { Auth } from '../../../core/services/auth/auth';
-
+import { SharedPopup } from '../../../shared/components/shared-popup/shared-popup';
 interface DaySlot {
   dateObj: Date;
   dayName: string; //  'Mon'
@@ -31,7 +32,7 @@ export class Appointments implements OnInit {
   labOffDays: string[] = [];
   currentMonthLabel: string = '';
   isLoadingSlots: boolean = false;
-  Math=Math;
+  Math = Math;
 
   //(Pagination)
   currentSlotPage: number = 0;
@@ -42,6 +43,7 @@ export class Appointments implements OnInit {
     private router: Router,
     private snackBar: MatSnackBar,
     private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -64,7 +66,7 @@ export class Appointments implements OnInit {
   nextSlotPage(): void {
     if (this.hasNextSlotPage) {
       this.currentSlotPage++;
-      this.cdr.detectChanges()
+      this.cdr.detectChanges();
     }
   }
 
@@ -194,16 +196,61 @@ export class Appointments implements OnInit {
       payload.address = this.patientAddress.trim();
     }
 
+    // this.bookingService.createAppointment(payload).subscribe({
+    //   next: () => {
+    //     this.snackBar.open('Appointment booked successfully!', 'Close', { duration: 4000 });
+    //     this.router.navigate(['/patient/reports']);
+    //   },
+    //   error: (err) => {
+    //     const errorMsg =
+    //       err.error?.message || 'Booking failed. This slot might have just been taken.';
+    //     this.snackBar.open(errorMsg, 'Close', { duration: 4000 });
+    //   },
+    // });
+    
     this.bookingService.createAppointment(payload).subscribe({
       next: () => {
-        this.snackBar.open('Appointment booked successfully!', 'Close', { duration: 4000 });
-        this.router.navigate(['/patient/reports']);
+        this.openBookingConfirmedPopup(this.selectedDate, this.selectedTime, this.appointmentType);
       },
       error: (err) => {
         const errorMsg =
           err.error?.message || 'Booking failed. This slot might have just been taken.';
         this.snackBar.open(errorMsg, 'Close', { duration: 4000 });
       },
+    });
+  }
+  private openBookingConfirmedPopup(date: string, time: string, type: string): void {
+    const visitLabel = type === 'Home-Visit' ? 'Home Visit' : 'Lab Visit';
+    const formattedDetails = `${visitLabel} on ${date} at ${time}`;
+
+    const dialogRef = this.dialog.open(SharedPopup, {
+      panelClass: 'custom-dialog-container',
+      disableClose: true, 
+      data: {
+        type: 'success',
+        title: 'Appointment Confirmed!',
+        descriptionTextBeforeName: 'Your appointment for ',
+        patientName: formattedDetails, 
+        descriptionTextAfterName: ' has been successfully booked. We look forward to serving you.',
+        showClose: true,
+        actions: [
+          { label: 'My Appointments', type: 'outline', value: 'appointments' },
+          { label: 'Back Dashboard', type: 'primary', value: 'dashboard' },
+        ],
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((actionValue) => {
+  
+      this.selectedTime = '';
+      this.patientAddress = '';
+      this.cdr.detectChanges();
+
+      if (actionValue === 'appointments') {
+        this.router.navigate(['/patient/my-appointments']);
+      } else {
+        this.router.navigate(['/patient/dashboard']);
+      }
     });
   }
 }
