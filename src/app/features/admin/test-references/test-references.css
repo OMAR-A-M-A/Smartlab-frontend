@@ -1,11 +1,427 @@
-.action-btn {
-    transition: all 0.3s ease;
-    border-radius: 8px;
+/* ===== Page Layout ===== */
+
+.patients-page {
+
+  padding: 30px;
+
+  font-family: 'Inter', 'DM Sans', sans-serif;
+
+  color: #1e293b;
+
+  max-width: 1500px;
+
+  margin: 0 auto;
+
 }
-.action-btn:hover {
-    transform: scale(1.1);
+
+/* ===== Header ===== */
+
+.page-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 24px;
+
 }
-.table thead th {
-    border-bottom: 2px solid #f8f9fa;
-    padding: 15px 10px;
+
+.page-title {
+
+  font-size: 24px;
+
+  font-weight: 700;
+
+  margin: 0 0 4px;
+
+  color: #111827;
+
+}
+
+.page-subtitle {
+
+  font-size: 14px;
+
+  color: #64748b;
+
+  margin: 0;
+
+}
+
+/* ===== Create Button ===== */
+
+.btn-create {
+
+  background: #1877f2;
+
+  color: #fff;
+
+  border: none;
+
+  border-radius: 10px;
+
+  padding: 12px 22px;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  transition: 0.2s;
+
+}
+
+.btn-create:hover {
+
+  background: #145dbf;
+
+}
+
+/* ===== Search ===== */
+
+.search-card {
+
+  margin-bottom: 24px;
+
+}
+
+.search-input-wrap {
+
+  position: relative;
+
+}
+
+.search-input-wrap i {
+
+  position: absolute;
+
+  top: 50%;
+
+  left: 16px;
+
+  transform: translateY(-50%);
+
+  color: #94a3b8;
+
+  font-size: 14px;
+
+}
+
+.search-input-wrap input {
+
+  width: 100%;
+
+  height: 50px;
+
+  border-radius: 12px;
+
+  border: 1px solid #e2e8f0;
+
+  padding: 0 16px 0 44px;
+
+  font-size: 14px;
+
+  outline: none;
+
+  transition: 0.2s;
+
+  background: #fff;
+
+}
+
+.search-input-wrap input:focus {
+
+  border-color: #1877f2;
+
+  box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1);
+
+}
+
+/* ===== Table Card ===== */
+
+.table-card {
+
+  background: #fff;
+
+  border-radius: 16px;
+
+  border: 1px solid #eaecf0;
+
+  overflow: hidden;
+
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05);
+
+}
+
+/* ===== Table ===== */
+
+.patients-table {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-size: 14px;
+
+}
+
+.patients-table thead tr {
+
+  background: #dbeafe;
+
+}
+
+.patients-table thead th {
+
+  padding: 16px 20px;
+
+  text-align: left;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  color: #475467;
+
+}
+
+.patients-table tbody tr {
+
+  border-bottom: 1px solid #f1f5f9;
+
+  transition: 0.15s;
+
+}
+
+.patients-table tbody tr:hover {
+
+  background: #f8faff;
+
+}
+
+.patients-table tbody td {
+
+  padding: 18px 20px;
+
+  vertical-align: middle;
+
+  color: #334155;
+
+}
+
+/* ===== Test Info ===== */
+
+.patient-name {
+
+  font-weight: 700;
+
+  color: #111827;
+
+  margin-bottom: 4px;
+
+}
+
+.patient-id {
+
+  font-size: 13px;
+
+  color: #64748b;
+
+  font-weight: 600;
+
+}
+
+/* ===== Tags ===== */
+
+.test-tag {
+
+  background: #f1f5f9;
+
+  color: #475467;
+
+  padding: 5px 12px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+}
+
+/* ===== Status ===== */
+
+.status-badge {
+
+  display: inline-block;
+
+  padding: 6px 14px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+}
+
+.status-completed {
+
+  background: #d1fae5;
+
+  color: #065f46;
+
+}
+
+.status-pending {
+
+  background: #fef3c7;
+
+  color: #92400e;
+
+}
+
+/* ===== Actions ===== */
+
+.actions-wrap {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+}
+
+.btn-action {
+
+  width: 34px;
+
+  height: 34px;
+
+  border-radius: 10px;
+
+  border: none;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  transition: 0.2s;
+
+}
+
+/* Edit */
+
+.btn-edit {
+
+  background: #eff6ff;
+
+  color: #1877f2;
+
+}
+
+.btn-edit:hover {
+
+  background: #dbeafe;
+
+}
+
+/* Delete */
+
+.btn-delete {
+
+  background: #fef2f2;
+
+  color: #ef4444;
+
+}
+
+.btn-delete:hover {
+
+  background: #fee2e2;
+
+}
+
+/* ===== Empty State ===== */
+
+.empty-state {
+
+  text-align: center;
+
+  padding: 60px 20px;
+
+  color: #94a3b8;
+
+}
+
+.empty-state i {
+
+  font-size: 40px;
+
+  margin-bottom: 12px;
+
+  display: block;
+
+  opacity: 0.4;
+
+}
+
+.empty-state p {
+
+  margin: 0;
+
+  font-size: 14px;
+
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1200px) {
+
+  .patients-table {
+
+    min-width: 1000px;
+
+  }
+
+  .table-card {
+
+    overflow-x: auto;
+
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  .patients-page {
+
+    padding: 16px;
+
+  }
+
+  .page-header {
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 16px;
+
+  }
+
 }

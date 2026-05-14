@@ -1,0 +1,324 @@
+:host {
+  display: block;
+}
+
+/* ===== Remove Angular Material ===== */
+
+::ng-deep .mat-mdc-dialog-container {
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+}
+
+::ng-deep .mdc-dialog__surface {
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+}
+
+/* ===== Modal ===== */
+
+.custom-modal-container {
+
+  background: #fff;
+
+  border-radius: 18px;
+
+  width: 100%;
+
+  max-width: 850px;
+
+  padding: 28px;
+
+  box-shadow:
+    0 20px 25px -5px rgba(0,0,0,.08),
+    0 10px 10px -5px rgba(0,0,0,.04);
+
+}
+
+/* ===== Header ===== */
+
+.modal-title {
+
+  font-size: 28px;
+
+  font-weight: 700;
+
+  color: #111827;
+
+  margin-bottom: 4px;
+
+}
+
+.modal-subtitle {
+
+  color: #64748b;
+
+  font-size: 14px;
+
+}
+
+/* ===== Close ===== */
+
+.btn-close-custom {
+
+  width: 38px;
+
+  height: 38px;
+
+  border-radius: 10px;
+
+  border: none;
+
+  background: #eff6ff;
+
+  color: #2563eb;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition: .2s ease;
+
+}
+
+.btn-close-custom:hover {
+
+  background: #dbeafe;
+
+}
+
+/* ===== Form ===== */
+
+.form-label {
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  color: #64748b;
+
+  text-transform: uppercase;
+
+  margin-bottom: 8px;
+
+}
+
+.form-control,
+.form-select {
+
+  border-radius: 12px !important;
+
+  border: 1px solid #e2e8f0 !important;
+
+  background: #fff !important;
+
+  height: 48px;
+
+  padding: 0 16px;
+
+  font-size: 14px;
+
+  box-shadow: none !important;
+
+  transition: .2s ease;
+
+}
+
+textarea.form-control {
+
+  height: auto;
+
+  padding: 14px 16px;
+
+}
+
+.form-control:focus,
+.form-select:focus {
+
+  border-color: #1877f2 !important;
+
+  box-shadow:
+    0 0 0 4px rgba(24,119,242,.10) !important;
+
+}
+
+/* ===== Critical Box ===== */
+
+.critical-box {
+
+  background: #fef2f2;
+
+  border: 1px dashed #fca5a5;
+
+  border-radius: 14px;
+
+  padding: 18px;
+
+}
+
+/* ===== Advice Box ===== */
+
+.advice-box {
+
+  background: #f8fafc;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 14px;
+
+  padding: 18px;
+
+}
+
+/* ===== Footer ===== */
+
+.modal-footer-custom {
+
+  margin-top: 30px;
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+}
+
+/* ===== Buttons ===== */
+
+.btn-save {
+
+  background: #1877f2;
+
+  color: #fff;
+
+  border: none;
+
+  border-radius: 12px;
+
+  padding: 12px 22px;
+
+  font-weight: 600;
+
+  transition: .2s ease;
+
+}
+
+.btn-save:hover {
+
+  background: #145dbf;
+
+}
+
+.btn-cancel {
+
+  background: #fff;
+
+  color: #475467;
+
+  border: 1px solid #d0d5dd;
+
+  border-radius: 12px;
+
+  padding: 12px 22px;
+
+  font-weight: 600;
+
+}
+
+.btn-cancel:hover {
+
+  background: #f8fafc;
+
+}
+
+/* ===== Error ===== */
+
+.error-text {
+
+  color: #dc2626;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+}
+
+/* ===== Dialog Size ===== */
+
+::ng-deep .mat-mdc-dialog-container {
+
+  max-height: 90vh !important;
+
+  overflow: hidden !important;
+
+}
+
+/* ===== Modal Container ===== */
+
+.custom-modal-container {
+
+  background: #fff;
+
+  border-radius: 18px;
+
+  width: 100%;
+
+  max-width: 850px;
+
+  max-height: 90vh;
+
+  overflow-y: auto;
+
+  overflow-x: hidden;
+
+  padding: 28px;
+
+  box-shadow:
+    0 20px 25px -5px rgba(0,0,0,.08),
+    0 10px 10px -5px rgba(0,0,0,.04);
+
+}
+
+/* ===== Scrollbar ===== */
+
+.custom-modal-container::-webkit-scrollbar {
+
+  width: 8px;
+
+}
+
+.custom-modal-container::-webkit-scrollbar-thumb {
+
+  background: #cbd5e1;
+
+  border-radius: 20px;
+
+}
+
+.custom-modal-container::-webkit-scrollbar-track {
+
+  background: transparent;
+
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 768px) {
+
+  .custom-modal-container {
+
+    padding: 20px;
+
+  }
+
+}

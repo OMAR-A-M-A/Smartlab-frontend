@@ -8,10 +8,11 @@ import { Reports } from '../../../core/services/reports/reports';
 import { Patient as PatientService } from '../../../core/services/patient/patient';
 import { MyAppointment } from '../../../shared/interfaces/appointment.interface';
 import { Report } from '../../../shared/interfaces/report.interface';
+import { Navbar } from "../../../shared/components/navbar/navbar";
 
 @Component({
   selector: 'app-patient-dashboard',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, Navbar],
   templateUrl: './patient-dashboard.html',
   styleUrl: './patient-dashboard.css',
 })

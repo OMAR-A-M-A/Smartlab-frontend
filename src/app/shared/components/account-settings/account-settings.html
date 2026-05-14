@@ -1,11 +1,17 @@
 <div class="settings-wrapper">
 
+  @if (isLoading) {
+    <div class="text-center py-5 text-muted d-flex flex-column align-items-center justify-content-center"
+    style="min-height: 400px;">
+    <i class="fa-solid fa-spinner fa-spin fa-2x mb-2 text-primary"></i>
+    <span class="small">Loading profile...</span>
+  </div>
+}@else{
   <div class="alert-box success-alert" *ngIf="successMessage">
     <span>✓</span> {{ successMessage }}
   </div>
 
   <div class="main-profile-container">
-
     <div class="avatar-section">
       <div class="avatar-circle">
         <img [src]="profileImage"
@@ -88,6 +94,7 @@
           <span class="info-value password-masked">••••••••••••</span>
         </div>
       </div>
+
     </div>
 
   </div>
@@ -147,5 +154,6 @@
       </form>
     </div>
   </div>
-
+  }
 </div>
+

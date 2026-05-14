@@ -40,7 +40,7 @@ export class AccountSettings implements OnInit {
   isLoadingData: boolean = false;
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
-
+  isLoading: boolean = true;
   isEditProfileModalOpen: boolean = false;
   isEditPasswordModalOpen: boolean = false;
   isSavingProfile: boolean = false;
@@ -96,6 +96,7 @@ export class AccountSettings implements OnInit {
 
   fetchAdminProfileData(): void {
     this.isLoadingData = true;
+    this.isLoading = true;
     this.cdr.detectChanges();
 
     this.authService.getAdminProfile().subscribe({
@@ -114,6 +115,7 @@ export class AccountSettings implements OnInit {
           };
         }
         this.isLoadingData = false;
+        this.isLoading = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -140,6 +142,7 @@ export class AccountSettings implements OnInit {
             nationalId: data.nationalId || 'N/A',
           };
 
+
           const targetUser = data.accountId || data;
           const nameParts = (targetUser.name || 'User Name').split(' ');
 
@@ -151,6 +154,7 @@ export class AccountSettings implements OnInit {
           };
         }
         this.isLoadingData = false;
+
         this.cdr.detectChanges();
       },
       error: (err) => {

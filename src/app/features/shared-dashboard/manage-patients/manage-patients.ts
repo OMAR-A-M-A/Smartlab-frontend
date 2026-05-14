@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild , ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -50,6 +50,7 @@ export class ManagePatients implements OnInit {
 
   isLoading = false;
   dataSource = new MatTableDataSource<any>([]);
+  private cdr = inject(ChangeDetectorRef);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -85,11 +86,13 @@ export class ManagePatients implements OnInit {
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
         });
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.isLoading = false;
         console.error('Failed to load patients list:', err);
         this.showMessage('Failed to load patient records.', true);
+        this.cdr.detectChanges();
       },
     });
   }
