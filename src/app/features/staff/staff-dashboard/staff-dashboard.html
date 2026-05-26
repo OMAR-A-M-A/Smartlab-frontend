@@ -1,81 +1,277 @@
 <div class="dash-container">
+
   <div class="dash-header">
+
     <div>
-      <h1 class="dash-title">Welcome back, {{ isLoading ? '...' : staffName }}</h1>
-      <p class="dash-subtitle">Manage lab reports, daily schedule, and test references.</p>
+
+      <h1 class="dash-title">
+        Welcome back,
+        {{ isLoading ? '...' : staffName }}
+      </h1>
+
+      <p class="dash-subtitle">
+        Manage lab reports, daily schedule,
+        and test references.
+      </p>
+
     </div>
+
   </div>
 
+  <!-- Stats -->
   <div class="stats-grid">
-    <div class="stat-card" *ngFor="let stat of statsCards">
+
+    <div
+      class="stat-card"
+      *ngFor="let stat of statsCards"
+    >
+
       <div class="stat-top">
-        <div class="stat-icon" [style.backgroundColor]="stat.bg" [style.color]="stat.color">
+
+        <div
+          class="stat-icon"
+          [style.backgroundColor]="stat.bg"
+          [style.color]="stat.color"
+        >
+
           <i [class]="stat.icon"></i>
+
         </div>
-        <span class="stat-label">{{ stat.title }}</span>
+
+        <span class="stat-label">
+          {{ stat.title }}
+        </span>
+
       </div>
+
       <div class="stat-number">
-        <ng-container *ngIf="!isLoading; else loader">{{ stat.value }}</ng-container>
+
+        <ng-container
+          *ngIf="!isLoading; else loader"
+        >
+
+          {{ stat.value }}
+
+        </ng-container>
+
       </div>
+
     </div>
+
   </div>
 
+  <!-- Main Grid -->
   <div class="dashboard-main-grid">
+
+    <!-- Chart -->
     <div class="ui-card chart-card">
+
       <div class="ui-card-header">
-        <h3 class="ui-card-title">Reports Overview</h3>
+
+        <h3 class="ui-card-title">
+          Reports Overview
+        </h3>
+
       </div>
+
       <div class="chart-flex">
+
         <div class="chart-wrapper">
-          <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [labels]="chartOptions.labels"
-            [colors]="chartOptions.colors" [plotOptions]="chartOptions.plotOptions" [legend]="chartOptions.legend">
+
+          <apx-chart
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [labels]="chartOptions.labels"
+            [colors]="chartOptions.colors"
+            [plotOptions]="chartOptions.plotOptions"
+            [legend]="chartOptions.legend"
+          >
           </apx-chart>
+
         </div>
+
         <div class="custom-legend">
-          <div class="legend-row"><span class="dot bg-green"></span><span>Completed</span></div>
-          <div class="legend-row"><span class="dot bg-navy"></span><span>Ready</span></div>
-          <div class="legend-row"><span class="dot bg-yellow"></span><span>In-Progress</span></div>
+
+          <div class="legend-row">
+            <span class="dot bg-green"></span>
+            <span>Completed</span>
+          </div>
+
+          <div class="legend-row">
+            <span class="dot bg-navy"></span>
+            <span>Ready</span>
+          </div>
+
+          <div class="legend-row">
+            <span class="dot bg-yellow"></span>
+            <span>In-Progress</span>
+          </div>
+
         </div>
+
       </div>
+
     </div>
 
+    <!-- Daily Appointments -->
     <div class="ui-card table-card">
+
       <div class="ui-card-header">
-        <h3 class="ui-card-title">Today's Schedule</h3>
-        <span class="badge-count">{{ recentAppointments.length }} Appointments</span>
+
+        <h3 class="ui-card-title">
+          Today's Schedule
+        </h3>
+
+        <span class="badge-count">
+          {{ recentAppointments.length }}
+          Appointments
+        </span>
+
       </div>
 
       <div class="table-responsive">
+
         <table class="dash-table">
+
           <thead>
+
             <tr>
+
               <th>Patient</th>
-              <th>Test Type</th>
+
+              <th>Type</th>
+
               <th>Time</th>
+
+              <th>Status</th>
+
               <th>Action</th>
+
             </tr>
+
           </thead>
+
           <tbody>
-            <tr *ngFor="let app of recentAppointments">
-              <td class="fw-600">{{ app.accountId?.name || 'Anonymous' }}</td>
-              <td class="text-muted">{{ app.appointmentType || 'Lab Visit' }}</td>
-              <td><span class="time-tag">{{ app.time }}</span></td>
-              <td>
-                <button class="review-btn" (click)="openReviewPopup(app.accountId?.name)">
-                  Review
-                </button>
+
+            <tr
+              *ngFor="
+                let app of recentAppointments
+              "
+            >
+
+              <td class="fw-600">
+
+                {{
+                  app.patient?.name ||
+                  'Anonymous'
+                }}
+
               </td>
+
+              <td class="text-muted">
+
+                {{
+                  app.appointmentType ||
+                  'Lab Visit'
+                }}
+
+              </td>
+
+              <td>
+
+                <span class="time-tag">
+
+                  {{ app.time || '---' }}
+
+                </span>
+
+              </td>
+
+              <td>
+
+                <span
+                  class="status-badge"
+                  [ngClass]="{
+
+                    'success':
+                      app.status
+                        ?.toLowerCase()
+                        === 'confirmed',
+
+                    'danger':
+                      app.status
+                        ?.toLowerCase()
+                        === 'cancelled',
+
+                    'warning':
+                      app.status
+                        ?.toLowerCase()
+                        === 'pending'
+
+                  }"
+                >
+
+                  {{ app.status || 'Pending' }}
+
+                </span>
+
+              </td>
+
+              <td>
+
+                <button
+                  class="review-btn"
+                  (click)="
+                    openReviewPopup(
+                      app.patient?.name
+                    )
+                  "
+                >
+
+                  Review
+
+                </button>
+
+              </td>
+
             </tr>
-            <tr *ngIf="!isLoading && recentAppointments.length === 0">
-              <td colspan="4" class="empty-state">No appointments for today.</td>
+
+            <tr
+              *ngIf="
+                !isLoading &&
+                recentAppointments.length === 0
+              "
+            >
+
+              <td
+                colspan="5"
+                class="empty-state"
+              >
+
+                No appointments for today.
+
+              </td>
+
             </tr>
+
           </tbody>
+
         </table>
+
       </div>
+
     </div>
+
   </div>
+
 </div>
 
 <ng-template #loader>
-  <span class="placeholder-glow"><span class="placeholder col-4"></span></span>
+
+  <span class="placeholder-glow">
+
+    <span class="placeholder col-4"></span>
+
+  </span>
+
 </ng-template>

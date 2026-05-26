@@ -66,9 +66,20 @@ export class Reports {
   Endpoint: PATCH /reports/:id
   Access: Admin / Staff
   */
-  updateReport(id: string, updateData: any): Observable<any> {
-    return this.http.patch(`${this.baseUrl}/reports/${id}`, updateData);
-  }
+  updateReport(
+  id: string,
+  updateData: any
+): Observable<any> {
+
+  return this.http.patch(
+
+    `${this.baseUrl}/reports/${id}`,
+
+    updateData
+
+  );
+
+}
 
   /*
   Endpoint: DELETE /reports/:id

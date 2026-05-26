@@ -52,21 +52,40 @@ export class ReportModal implements OnInit {
 
   ngOnInit(): void {
 
+  setTimeout(() => {
+
     if (this.data?.patientId) {
 
-  this.reportForm.patchValue({
-    patient: this.data.patientId
-  });
+      this.reportForm.patchValue({
 
-}
+        patient: this.data.patientId
 
-if (this.data?.report) {
+      });
 
-  this.isEditMode = true;
+      console.log('PATIENT ID:', this.data.patientId);
 
-  this.patchValues(this.data.report);
-}
+    }
+
+    if (this.data?.patientData) {
+
+      console.log(
+        'PATIENT DATA:',
+        this.data.patientData
+      );
+
+    }
+
+  }, 0);
+
+  if (this.data?.report) {
+
+    this.isEditMode = true;
+
+    this.patchValues(this.data.report);
+
   }
+
+}
 
   initForm(): void {
 
@@ -106,7 +125,7 @@ if (this.data?.report) {
   addTest(): void {
 
     const testGroup = this.fb.group({
-
+      testId: [''],
       testName: [
         '',
         Validators.required,
@@ -151,79 +170,83 @@ if (this.data?.report) {
 
   patchValues(report: any): void {
 
-    const patientId =
-      typeof report.patient === 'object'
-        ? report.patient?._id
-        : report.patient;
+  const patientId =
+    typeof report.patient === 'object'
+      ? report.patient?._id
+      : report.patient;
 
-    this.reportForm.patchValue({
+  this.reportForm.patchValue({
 
-      patient: patientId || '',
+    patient: patientId || '',
 
-      referredBy:
-        report.referredBy || '',
+    referredBy:
+      report.referredBy || '',
 
-      patientAdvice:
-        report.patientAdvice || '',
+    patientAdvice:
+      report.patientAdvice || '',
 
-      reportStatus:
-        report.reportStatus || 'Pending',
-    });
+    reportStatus:
+      report.reportStatus || 'Pending',
+  });
 
-    this.tests.clear();
+  this.tests.clear();
 
-    report.tests?.forEach((t: any) => {
+  report.tests?.forEach((t: any) => {
 
-      this.tests.push(
+    this.tests.push(
 
-        this.fb.group({
+      this.fb.group({
 
-          testName: [
-            t.testName || '',
-            Validators.required,
+        testId: [
+          t.testId || t.test || '',
+        ],
+
+        testName: [
+          t.testName || '',
+          Validators.required,
+        ],
+
+        category: [
+          t.category || '',
+          Validators.required,
+        ],
+
+        result: [
+          t.result || 0,
+          Validators.required,
+        ],
+
+        unit: [
+          t.unit || '',
+          Validators.required,
+        ],
+
+        referenceRange: this.fb.group({
+
+          low: [
+            t.referenceRange?.low || 0,
           ],
 
-          category: [
-            t.category || '',
-            Validators.required,
+          high: [
+            t.referenceRange?.high || 0,
           ],
+        }),
 
-          result: [
-            t.result || 0,
-            Validators.required,
-          ],
+        status: [
+          t.status || 'N',
+        ],
 
-          unit: [
-            t.unit || '',
-            Validators.required,
-          ],
+        critical: [
+          t.critical || false,
+        ],
 
-          referenceRange: this.fb.group({
-
-            low: [
-              t.referenceRange?.low || 0,
-            ],
-
-            high: [
-              t.referenceRange?.high || 0,
-            ],
-          }),
-
-          status: [
-            t.status || 'N',
-          ],
-
-          critical: [
-            t.critical || false,
-          ],
-
-          patientAdvice: [
-            t.patientAdvice || '',
-          ],
-        })
-      );
-    });
-  }
+        patientAdvice: [
+          t.patientAdvice || '',
+        ],
+      })
+    );
+  });
+}
 
   submit(): void {
 

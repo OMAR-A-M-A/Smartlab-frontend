@@ -191,10 +191,16 @@ export class ManagePatients implements OnInit {
 
   // التوجيه السريع لإنشاء التقارير (تمت إضافته من الفرع الرئيسي)
   goToCreateReport(patient: any) {
-    this.router.navigate(['/staff/reports'], {
-      queryParams: { patientId: patient._id },
-    });
-  }
+  const role = localStorage.getItem('role');
+  const baseRoute = role === 'admin' ? '/admin/reports' : '/staff/reports';
+
+  this.router.navigate([baseRoute], {
+    queryParams: {
+      patientId: patient._id,
+      // ← شيل openModal أو خليها false
+    },
+  });
+}
 
   private openPatientCreatedPopup(patientName: string, generatedId: string): void {
     const dialogRef = this.dialog.open(SharedPopup, {

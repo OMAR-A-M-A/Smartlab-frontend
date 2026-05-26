@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Reports as ReportsService } from '../../../core/services/reports/reports';
 import { ReportModal } from '../../../shared/components/report-modal/report-modal';
 
@@ -38,19 +38,30 @@ export class Reports implements OnInit {
   private reportService = inject(ReportsService);
   private cdr           = inject(ChangeDetectorRef);
   private route         = inject(ActivatedRoute);
+  private router        = inject(Router); // ✅ كان ناقص
 
   reports: Report[] = [];
   isLoading = false;
   filterByPatient = '';
 
   ngOnInit(): void {
-    // أول حاجة نقرأ الـ params، وبعدين نجيب الداتا
-    this.route.queryParams.subscribe((params) => {
-      this.filterByPatient = params['patientId'] || '';
-      const reportId       = params['reportId']  || '';
-      this.loadReports(reportId);
-    });
-  }
+  this.route.queryParams.subscribe(params => {
+    const patientId = params['patientId'];
+
+    if (patientId) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: {},
+        replaceUrl: true,
+      });
+      // فلتر على المريض وخلاص، من غير ما تفتح modal
+      this.loadReports();
+      this.filterByPatient = patientId;
+    } else {
+      this.loadReports();
+    }
+  });
+}
 
   get filteredReports(): Report[] {
     if (!this.filterByPatient) return this.reports;
@@ -64,7 +75,7 @@ export class Reports implements OnInit {
     this.cdr.detectChanges();
   }
 
-  loadReports(autoOpenReportId?: string): void {
+  loadReports(autoOpenReportId?: string, autoOpenForPatientId?: string): void { // ✅ بارامتر جديد
     this.isLoading = true;
     this.cdr.detectChanges();
 
@@ -74,12 +85,18 @@ export class Reports implements OnInit {
         this.isLoading = false;
         this.cdr.detectChanges();
 
-        // لو في reportId في الـ URL افتح الـ edit modal تلقائياً
+        // لو في reportId في الـ URL افتالـ edit modal تلقائياً
         if (autoOpenReportId) {
           const report = this.reports.find((r) => r._id === autoOpenReportId);
           if (report) {
             setTimeout(() => this.openEditModal(report), 300);
           }
+        }
+
+        if (autoOpenForPatientId) {
+          this.filterByPatient = autoOpenForPatientId;
+          this.cdr.detectChanges();
+          setTimeout(() => this.openAddModal(autoOpenForPatientId), 300);
         }
       },
       error: (err) => {
@@ -90,40 +107,160 @@ export class Reports implements OnInit {
     });
   }
 
-  openAddModal(): void {
-    const dialogRef = this.dialog.open(ReportModal, {
+  openAddModal(preselectedPatientId?: string): void {
+
+  const selectedPatient = this.reports.find(
+    (r) => r.patient?._id === preselectedPatientId
+  )?.patient;
+
+  const dialogRef = this.dialog.open(ReportModal, {
+
+    width: '720px',
+
+    maxHeight: '90vh',
+
+    data: {
+
+      patientId: preselectedPatientId,
+
+      patientData: selectedPatient,
+
+    },
+
+  });
+
+  dialogRef.afterClosed().subscribe((result) => {
+
+    if (!result) return;
+
+    this.reportService
+      .createReport(result)
+      .subscribe(() => this.loadReports());
+
+  });
+
+}
+
+  openEditModal(report: any): void {
+
+  const cleanReport = {
+
+    patient:
+
+      typeof report.patient === 'object'
+
+        ? report.patient._id
+
+        : report.patient,
+
+    referredBy:
+      report.referredBy || '',
+
+    reportStatus:
+      report.reportStatus || 'Pending',
+
+    patientAdvice:
+      report.patientAdvice || '',
+
+    tests:
+
+      report.tests.map((t: any) => ({
+
+        ...t,
+
+        testId:
+          t.test ||
+          t.testId ||
+
+          null,
+
+      })),
+
+  };
+
+  const dialogRef = this.dialog.open(
+    ReportModal,
+    {
+
       width: '720px',
+
       maxHeight: '90vh',
-    });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-      this.reportService.createReport(result).subscribe(() => this.loadReports());
-    });
-  }
+      data: {
+        report: cleanReport
+      },
 
-  openEditModal(report: Report): void {
-    const cleanReport = {
-      _id:          report._id,
-      patient:      report.patient?._id || '',
-      referredBy:   report.referredBy   || '',
-      reportStatus: report.reportStatus || 'Pending',
-      tests:        report.tests ? JSON.parse(JSON.stringify(report.tests)) : [],
+    }
+  );
+
+  dialogRef.afterClosed()
+  .subscribe((result) => {
+
+    if (!result) return;
+
+    const payload = {
+
+      ...result,
+
+      tests: result.tests.map((t: any) => ({
+        testId: t.testId,
+        testName: t.testName,
+
+        category: t.category,
+
+        result: Number(t.result),
+
+        unit: t.unit,
+
+        referenceRange: {
+
+          low: Number(t.referenceRange.low),
+
+          high: Number(t.referenceRange.high),
+
+        },
+
+        status: t.status,
+
+        critical: t.critical,
+
+        patientAdvice:
+          t.patientAdvice || '',
+
+      })),
+
     };
 
-    const dialogRef = this.dialog.open(ReportModal, {
-      width:     '720px',
-      maxHeight: '90vh',
-      data: { report: cleanReport },
-    });
+    this.reportService
+      .updateReport(
+        report._id,
+        payload
+      )
+      .subscribe({
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-      this.reportService
-        .updateReport(report._id, result)
-        .subscribe(() => this.loadReports());
-    });
-  }
+        next: (res) => {
+
+          console.log('UPDATED');
+
+          this.loadReports();
+            console.log('SUCCESS:', res);
+
+
+        },
+
+        error: (err) => {
+
+           console.log('ERROR FULL:', err);
+
+  console.log('ERROR MESSAGE:', err.error);
+
+        }
+
+      });
+
+});
+
+}
 
   deleteReport(id: string): void {
     if (!confirm('Are you sure you want to delete this report?')) return;

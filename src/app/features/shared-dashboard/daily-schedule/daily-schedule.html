@@ -1,79 +1,284 @@
-<div class="container-fluid py-4" style="background-color: #f8f9fa; min-height: 100vh;">
-  
-  <div class="d-flex justify-content-between align-items-center mb-4 px-3">
-    <h2 class="fw-bold m-0 text-dark">Laboratory Schedule</h2>
+<div
+  class="container-fluid py-4"
+  style="background-color: #f8f9fa; min-height: 100vh;"
+>
+
+  <!-- Header -->
+  <div
+    class="d-flex justify-content-between align-items-center mb-4 px-3"
+  >
+
+    <h2 class="fw-bold m-0 text-dark">
+      Laboratory Schedule
+    </h2>
+
     <div class="bg-white p-2 rounded-3 shadow-sm border">
-      <input type="date" [value]="selectedDate" (change)="onDateChange($event)" class="border-0 fw-bold outline-none">
+
+      <input
+        type="date"
+        [value]="selectedDate"
+        (change)="onDateChange($event)"
+        class="border-0 fw-bold outline-none"
+      >
+
     </div>
+
   </div>
 
+  <!-- Statistics -->
   <div class="row mb-4 px-3">
-    <div class="col-md-4">
-      <div class="card border-0 shadow p-3 border-start border-primary border-5 rounded-4">
-        <h6 class="text-muted small fw-bold text-uppercase">Total</h6>
-        <h3 class="fw-bold mb-0">{{ appointments?.length || 0 }}</h3>
+
+    <div class="col-md-4 mb-3">
+
+      <div
+        class="card border-0 shadow p-3 border-start border-primary border-5 rounded-4"
+      >
+
+        <h6
+          class="text-muted small fw-bold text-uppercase"
+        >
+          Total Appointments
+        </h6>
+
+        <h3 class="fw-bold mb-0">
+          {{ getStats('total') }}
+        </h3>
+
       </div>
+
     </div>
-    <div class="col-md-4">
-      <div class="card border-0 shadow p-3 border-start border-info border-5 rounded-4">
-        <h6 class="text-muted small fw-bold text-uppercase">Home Visits</h6>
-        <h3 class="fw-bold mb-0 text-info">{{ getStats('home') }}</h3>
+
+    <div class="col-md-4 mb-3">
+
+      <div
+        class="card border-0 shadow p-3 border-start border-info border-5 rounded-4"
+      >
+
+        <h6
+          class="text-muted small fw-bold text-uppercase"
+        >
+          Home Visits
+        </h6>
+
+        <h3 class="fw-bold mb-0 text-info">
+          {{ getStats('home') }}
+        </h3>
+
       </div>
+
     </div>
-    <div class="col-md-4">
-      <div class="card border-0 shadow p-3 border-start border-danger border-5 rounded-4">
-        <h6 class="text-muted small fw-bold text-uppercase">Cancelled</h6>
-        <h3 class="fw-bold mb-0 text-danger">{{ getStats('cancelled') }}</h3>
+
+    <div class="col-md-4 mb-3">
+
+      <div
+        class="card border-0 shadow p-3 border-start border-danger border-5 rounded-4"
+      >
+
+        <h6
+          class="text-muted small fw-bold text-uppercase"
+        >
+          Cancelled
+        </h6>
+
+        <h3 class="fw-bold mb-0 text-danger">
+          {{ getStats('cancelled') }}
+        </h3>
+
       </div>
+
     </div>
+
   </div>
 
-  <div class="card border-0 shadow-sm rounded-4 mx-3 overflow-hidden">
+  <!-- Loading -->
+  <div
+    *ngIf="loading"
+    class="text-center py-5"
+  >
+
+    <div
+      class="spinner-border text-primary"
+      role="status"
+    ></div>
+
+  </div>
+
+  <!-- Empty State -->
+  <div
+    *ngIf="!loading && appointments.length === 0"
+    class="card border-0 shadow-sm rounded-4 mx-3 p-5 text-center"
+  >
+
+    <h5 class="text-muted">
+      No appointments found for this date
+    </h5>
+
+  </div>
+
+  <!-- Appointments Table -->
+  <div
+    *ngIf="!loading && appointments.length > 0"
+    class="card border-0 shadow-sm rounded-4 mx-3 overflow-hidden"
+  >
+
     <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0">
+
+      <table
+        class="table table-hover align-middle mb-0"
+      >
+
         <thead class="bg-light">
+
           <tr>
-            <th class="ps-4 py-3">PATIENT</th>
-            <th>TIME</th>
-            <th>VISIT DETAILS</th>
-            <th class="text-center">STATUS</th>
+
+            <th class="ps-4 py-3">
+              PATIENT
+            </th>
+
+            <th>
+              DATE
+            </th>
+
+            <th>
+              TIME
+            </th>
+
+            <th>
+              TYPE
+            </th>
+
+            <th>
+              VISIT DETAILS
+            </th>
+
+            <th class="text-center">
+              STATUS
+            </th>
+
           </tr>
+
         </thead>
+
         <tbody>
+
           <tr *ngFor="let app of appointments">
+
+            <!-- Patient -->
             <td class="ps-4">
-              <div class="fw-bold text-dark">{{ app.patient?.name || app.patient || 'N/A' }}</div>
-              <small class="text-muted">ID: {{ app._id || app.id || '---' }}</small>
-            </td>
-            
-            <td class="fw-bold text-primary">
-              <i class="far fa-clock me-1"></i> {{ app.time || 'Not Set' }}
-            </td>
 
-            <td style="max-width: 400px;">
-              <div class="small text-muted">
-                <div *ngIf="app.appointmentType === 'Home-Visit'" class="text-info fw-bold mb-1">
-                  <i class="fas fa-map-marker-alt"></i> {{ app.address || 'Address missing' }}
-                </div>
-                <div>
-                  <i class="fas fa-info-circle opacity-50"></i> {{ app.notes || 'No notes' }}
-                </div>
+              <div class="fw-bold text-dark">
+                {{ app.patient?.name || 'N/A' }}
               </div>
+
+              <small class="text-muted">
+                {{ app.patient?.phone || 'No Phone' }}
+              </small>
+
             </td>
 
-            <td class="text-center">
-              <span class="badge rounded-pill px-3 py-2 border w-75" 
-                    [ngClass]="{
-                      'bg-success bg-opacity-10 text-success border-success': app.status?.toLowerCase() === 'confirmed',
-                      'bg-danger bg-opacity-10 text-danger border-danger': app.status?.toLowerCase() === 'cancelled'
-                    }"
-                    style="font-size: 0.85rem; font-weight: 700;">
-                {{ app.status || 'Unknown' }}
+            <!-- Date -->
+            <td>
+
+              <span class="fw-semibold">
+                {{ formatDate(app.appointmentDate) }}
               </span>
+
             </td>
+
+            <!-- Time -->
+            <td class="fw-bold text-primary">
+
+              <i class="far fa-clock me-1"></i>
+
+              {{ app.time || 'Not Set' }}
+
+            </td>
+
+            <!-- Type -->
+            <td>
+
+              <span
+                class="badge rounded-pill px-3 py-2"
+                [ngClass]="{
+                  'bg-info-subtle text-info':
+                    app.appointmentType === 'Home-Visit',
+
+                  'bg-primary-subtle text-primary':
+                    app.appointmentType === 'Lab-Visit'
+                }"
+              >
+
+                {{ app.appointmentType }}
+
+              </span>
+
+            </td>
+
+            <!-- Details -->
+            <td style="max-width: 400px;">
+
+              <div class="small text-muted">
+
+                <div
+                  *ngIf="app.appointmentType === 'Home-Visit'"
+                  class="text-info fw-bold mb-1"
+                >
+
+                  <i class="fas fa-map-marker-alt"></i>
+
+                  {{ app.address || 'Address missing' }}
+
+                </div>
+
+                <div>
+
+                  <i class="fas fa-info-circle opacity-50"></i>
+
+                  {{ app.notes || 'No notes available' }}
+
+                </div>
+
+              </div>
+
+            </td>
+
+            <!-- Status -->
+            <td class="text-center">
+
+              <span
+                class="badge rounded-pill px-3 py-2 border w-75"
+                [ngClass]="{
+
+                  'bg-success bg-opacity-10 text-light border-success':
+                    app.status?.toLowerCase() === 'confirmed',
+
+                  'bg-danger bg-opacity-10 text-light border-danger':
+                    app.status?.toLowerCase() === 'cancelled',
+
+                  'bg-warning bg-opacity-10 text-warning border-warning':
+                    app.status?.toLowerCase() === 'pending'
+
+                }"
+                style="
+                  font-size: 0.85rem;
+                  font-weight: 700;
+                "
+              >
+
+                {{ app.status || 'Unknown' }}
+
+              </span>
+
+            </td>
+
           </tr>
+
         </tbody>
+
       </table>
+
     </div>
+
   </div>
+
 </div>
