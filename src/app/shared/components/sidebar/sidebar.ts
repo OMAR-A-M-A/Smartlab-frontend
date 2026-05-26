@@ -65,7 +65,7 @@ export class Sidebar implements OnInit {
         { label: 'Test References', icon: 'fa-solid fa-flask-vial', route: '/admin/test-references' },
         { label: 'Daily Schedule', icon: 'fa-solid fa-calendar-check', route: '/admin/schedule' },
         { label: 'Lab Reports', icon: 'fa-solid fa-file-medical', route: '/admin/reports' },
-        { label: 'Critical Reports', icon: 'fa-solid fa-triangle-exclamation', route: '/admin/dangerous-reports' },
+        // { label: 'Critical Reports', icon: 'fa-solid fa-triangle-exclamation', route: '/admin/dangerous-reports' },
         { label: 'Lab Settings', icon: 'fa-solid fa-gears', route: '/admin/lab-settings' },
         { label: 'Account Settings', icon: 'fa-solid fa-user-shield', route: '/admin/settings' },
       ];

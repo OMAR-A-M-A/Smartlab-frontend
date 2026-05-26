@@ -261,13 +261,13 @@ export const routes: Routes = [
           ),
       },
 
-      {
-        path: 'dangerous-reports',
-        loadComponent: () =>
-          import('./features/admin/dangerous-reports/dangerous-reports').then(
-            (c) => c.DangerousReports
-          ),
-      },
+      // {
+      //   path: 'dangerous-reports',
+      //   loadComponent: () =>
+      //     import('./features/admin/dangerous-reports/dangerous-reports').then(
+      //       (c) => c.DangerousReports
+      //     ),
+      // },
 
       {
         path: 'schedule',

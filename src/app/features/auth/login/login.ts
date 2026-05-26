@@ -45,7 +45,7 @@ export class Login {
           this.router.navigate(['/']);
         } else if (response.data.role === 'patient') {
           if (response.data.isFirstLogin) {
-            this.router.navigate(['/update-password']);
+            this.router.navigate(['/change-password']);
           } else {
             this.router.navigate(['/']);
           }

@@ -129,6 +129,7 @@ export class AccountSettings implements OnInit {
 
   fetchStaffProfileData(): void {
     this.isLoadingData = true;
+    this.isLoading = true;
     this.cdr.detectChanges();
 
     this.authService.getStaffProfile().subscribe({
@@ -154,7 +155,7 @@ export class AccountSettings implements OnInit {
           };
         }
         this.isLoadingData = false;
-
+        this.isLoading = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
